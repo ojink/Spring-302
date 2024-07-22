@@ -1,0 +1,17 @@
+spring boot starter project  + jsp
+버전3.x --> 2.x + Mybatis + Maven
+
+spring boot 는 내장tomcat 을 사용한다
+그런데 jsp를 지원하지 않으므로 jsp를 지원하는 tomcat 라이브러리 추가하기
+mvnrepository.com> tomcat jasper 검색
+
+요청uri에 대한 메소드 연결: @RequestMapping( 요청uri )
+응답화면 지정
+@RequestMapping( 요청uri )
+public String 메소드명(){
+  return 화면명  -> 화면명.jsp 로 응답됨 : properties 파일에 지정함
+}
+
+응답화면에 출력할 정보: Model 객체에 attribute로 담기
+Model타입.addAttribute(속성명, 저장할 데이터);
+
