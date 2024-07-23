@@ -4,9 +4,20 @@ spring:
   mvc:
     view:
       prefix: /WEB-INF/views/
-      suffix: .jsp  
-
+      suffix: .jsp
+  config:
+    import: classpath:info.yml
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: ${oracle.url}
+    username: ${oracle.username}
+    password: ${oracle.password}
 server:
-  port: 80
+  #port: 80
   servlet:
     context-path: /smart
+
+#매퍼파일 위치 지정
+mybatis:
+  mapper-locations: classpath:sqlmap/*Mapper.xml
+  config-location: classpath:sqlmap/typeConfig.xml
