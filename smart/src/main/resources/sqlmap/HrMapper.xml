@@ -2,6 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.hr.HrMapper">
 
+<!-- 부서장인지 확인하기 위한 조회 -->
+<select id="countIsManagerOfDepartment" resultType="integer">
+select count(*) from departments 
+where manager_id = #{employee_id}
+</select>
+
+<!-- 매니저인지 확인하기 위한 관리하는 사원수 조회 -->
+<select id="countIsManager" resultType="integer">
+select count(*) from employees 
+where manager_id = #{employee_id}
+</select>
+
+<!-- 사원정보 삭제 -->
+<delete id="deleteEmployee">
+delete from employees where employee_id = #{employee_id}
+</delete>
+
+<!-- 전체 매니저목록 조회 -->
+<select id="getListOfManager" resultType="employee">
+select employee_id as manager_id
+		, last_name|| ' ' || first_name as manager_name
+from employees
+<if test="employee_id != null">where employee_id != #{employee_id}</if> 
+order by manager_name
+</select>
+
+<!-- 전체 업무목록 조회 -->
+<select id="getListOfJob">
+select * from jobs order by job_title
+</select>
+
+<!-- 전체 부서목록 조회 -->
+<select id="getListOfDepartment" resultType="department">
+select * from departments order by department_name
+</select>
+
+
+<!-- 사원정보 변경저장 -->
+<update id="updateEmployee">
+update employees
+set last_name= #{last_name}, first_name = #{first_name}, email = #{email}
+	, phone_number = #{phone_number}, hire_date = #{hire_date}
+	, salary = #{salary}, job_id = #{job_id}
+	, <if test="department_id == -1">department_id = null</if>
+	  <if test="department_id != -1">department_id = #{department_id}</if>
+	, <choose><when test="manager_id == -1">manager_id = null</when>
+			  <otherwise>manager_id = #{manager_id}</otherwise>
+	  </choose>  	
+where employee_id = #{employee_id}
+</update>
+
 <!-- 선택한 사원정보조회 -->
 <select id="getOneEmployee" resultType="employee">
 select e.*, department_name, job_title

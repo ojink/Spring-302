@@ -7,25 +7,23 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h3 class="my-4">사원정보수정</h3>
+<h3 class="my-4">신규사원등록</h3>
 
-<form method="post" action="update">
-<input type="hidden" name="employee_id" value="${vo.employee_id }">
+<form method="post" action="register">
 <table class="table tb-row">
 <colgroup>
 	<col width="200px">
 	<col>
 </colgroup>
-<tr><th>사번</th>
-	<td>${vo.employee_id }</td>
-</tr>
 <tr><th>사원명</th>
 	<td><div class="row">
 			<div class="col-auto">
-				<input type="text" required placeholder="성" class="form-control" name="last_name" value="${vo.last_name }">
+				<input type="text" required placeholder="성" 
+						class="form-control" name="last_name">
 			</div>
 			<div class="col-auto">
-				<input type="text" placeholder="명" class="form-control" name="first_name" value="${vo.first_name }">
+				<input type="text" placeholder="명" class="form-control" 
+						name="first_name" >
 			</div>
 		</div>
 	</td>
@@ -33,7 +31,7 @@
 <tr><th>이메일</th>
 	<td><div class="row">
 			<div class="col-auto">
-				<input type="text" name="email" value="${vo.email }" class="form-control" required>
+				<input type="text" name="email" class="form-control" required>
 			</div>
 		</div>
 	</td>
@@ -41,7 +39,7 @@
 <tr><th>전화번호</th>
 	<td><div class="row">
 			<div class="col-auto">
-				<input type="text" name="phone_number" value="${vo.phone_number }" class="form-control">
+				<input type="text" name="phone_number" class="form-control">
 			</div>
 		</div>
 	</td>
@@ -49,7 +47,7 @@
 <tr><th>입사일자</th>
 	<td><div class="row">
 			<div class="col-auto">
-				<input type="text" required name="hire_date" value="${vo.hire_date }" class="form-control date">
+				<input type="text" required name="hire_date"  class="form-control date">
 			</div>
 		</div>
 	</td>
@@ -57,7 +55,7 @@
 <tr><th>급여</th>
 	<td><div class="row">
 			<div class="col-auto">
-				<input type="text" name="salary" value="${vo.salary }" class="form-control">
+				<input type="text" name="salary"  class="form-control">
 			</div>
 		</div>
 	</td>
@@ -111,12 +109,17 @@
 </div>
 
 <script>
+$(function(){
+	//신규사원 입사일자의 기본: 오늘날짜로 지정
+	$(".date").datepicker("setDate", new Date());
+}) 
+
 $("#btn-save").on("click", function(){
 	$("form").submit();
 })
 
 $("#btn-cancel").on("click", function(){
-	location='info?id=${vo.employee_id}';
+	location='list';
 })
 // document.getElementById("btn-cancel").addEventListener("click", function(){
 // 	location='info?id=${vo.employee_id}';

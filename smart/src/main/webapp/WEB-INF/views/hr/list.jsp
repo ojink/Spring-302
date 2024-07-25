@@ -9,7 +9,7 @@
 <body>
 <h3 class="my-4">사원목록</h3>
 
-<div class="row mb-3">
+<div class="row mb-3 justify-content-between">
 	<div class="col-auto d-flex align-items-center">
 		<label class="me-3">부서명</label>
 		<form method="post" action="list">
@@ -20,6 +20,11 @@
 			</c:forEach>
 		</select>
 		</form>
+	</div>
+	
+	<div class="col-auto">
+		<button class="btn btn-primary" 
+			onclick="location='register' ">신규사원등록</button>
 	</div>
 </div>
 

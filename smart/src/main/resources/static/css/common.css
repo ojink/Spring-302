@@ -3,8 +3,10 @@
 body * { vertical-align: middle; }
 table { border-top: 2px solid var(--bs-gray-dark)  }
 table th { background-color: var(--bs-gray-100) !important }
-table th, table td { border-right: 1px solid var(--bs-border-color);
-   padding-left: 20px !important 
+table.tb-list th, table.tb-list td,
+table.tb-row th, table.tb-row td{ 
+	border-right: 1px solid var(--bs-border-color);
+   	padding-left: 20px !important 
 }
 table th:last-child, table td:last-child { border-right: none; }
 table.tb-list tr { height: 45px }
