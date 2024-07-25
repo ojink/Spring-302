@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smart.hr.HrMapper">
+
+<!-- 선택한 사원정보조회 -->
+<select id="getOneEmployee" resultType="employee">
+select e.*, department_name, job_title
+		, e.last_name|| ' ' || e.first_name as name 
+		, m.last_name|| ' ' || m.first_name as manager_name 
+from employees e left outer join departments d on e.department_id = d.department_id
+     inner join jobs j on e.job_id = j.job_id
+     left outer join employees m on e.manager_id = m.employee_id
+where e.employee_id = #{employee_id}
+</select>
+
+<!-- 사원이 속해 있는 부서목록 -->
+<select id="getListOfDepartmentWithEmployee" resultType="department">
+select distinct department_id, nvl(department_name, '소속없음') as department_name
+from employees e left outer join departments d using(department_id)
+order by department_name
+</select>
+
+<!-- 사원목록조회 -->
+<select id="getListOfEmployee" resultType="employee">
+select e.*, department_name, job_title, last_name|| ' ' || first_name as name 
+from employees e left outer join departments d on e.department_id = d.department_id
+     inner join jobs j on e.job_id = j.job_id
+<if test="department_id == 0">where e.department_id is null</if>
+<if test="department_id > 0">where e.department_id = #{department_id}</if>
+order by employee_id
+</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

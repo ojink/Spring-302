@@ -9,8 +9,18 @@
 <body>
 <h3 class="my-4">고객목록</h3>
 
-<div class="row mb-3">
-	<div class="auto">
+<div class="row mb-3 justify-content-between">
+	<div class="col-auto">
+		<form method="post" action="list">
+		<div class="input-group">
+			<label class="col-form-label me-3">고객명</label>
+			<input type="text" value="${name}" name="name" class="form-control">
+			<button class="btn btn-primary">검색</button>
+		</div>
+		</form>
+	</div>
+
+	<div class="col-auto">
 		<button class="btn btn-primary" onclick="location='register'">고객등록</button>
 	</div>
 </div>
@@ -27,7 +37,7 @@
 </c:if>
 
 <c:forEach items="${list}" var="vo">
-<tr><td>${vo.name }</td>
+<tr><td><a class="text-link" href="info?id=${vo.id}">${vo.name }</a></td>
 	<td>${vo.phone }</td>
 	<td>${vo.email }</td>
 </tr>
