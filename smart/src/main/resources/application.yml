@@ -12,6 +12,13 @@ spring:
     url: ${oracle.url}
     username: ${oracle.username}
     password: ${oracle.password}
+
+  mail:
+    host: smtp.naver.com
+    username: ${naver.email.username}
+    password: ${naver.email.password}
+    default-encoding: utf-8
+
 server:
   #port: 80
   servlet:

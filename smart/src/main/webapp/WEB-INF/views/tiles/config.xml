@@ -10,5 +10,8 @@
 	<definition template="/WEB-INF/views/tiles/layout.jsp" name="*/*">
 		<put-attribute name="container" value="/WEB-INF/views/{1}/{2}.jsp" />
 	</definition>
+	<definition template="/WEB-INF/views/tiles/default.jsp" name="default/*/*">
+		<put-attribute name="container" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
 
 </tiles-definitions>      

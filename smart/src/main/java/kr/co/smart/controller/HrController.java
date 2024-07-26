@@ -26,7 +26,7 @@ public class HrController {
 	@PostMapping("/register")
 	public String register(EmployeeVO vo) {
 		//화면에서 입력한 정보로  DB에 신규저장하기
-		
+		mapper.registerEmployee(vo);
 		//응답화면-목록화면
 		return "redirect:list";
 	}

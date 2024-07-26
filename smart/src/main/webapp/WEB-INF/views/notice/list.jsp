@@ -7,7 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h3 class="mt-4">스마트 IoT 홈</h3>
-<img src="<c:url value='/images/main.jpg'/>" class="w-100"> 
+<h3 class="my-4">공지글 목록</h3>
 </body>
 </html>

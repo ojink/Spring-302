@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smart.member.MemberMapper">
+
+<!-- 비밀번호 변경저장 -->
+<update id="updatePassword">
+update member set userpw = #{userpw} where userid = #{userid}
+</update>
+
+<!-- 아이디와 이메일이 일치하는 회원정보 조회 -->
+<select id="getOneMemberByUseridAndEmail" resultType="member">
+select * from member 
+where userid = #{userid} and email = #{email}
+</select>
+
+<!-- 회원정보조회: 로그인,내정보조회 -->
+<select id="getOneMember" resultType="member">
+select * from member where userid = #{userid}
+</select>
+
+<!-- 테스트용 회원정보 저장 -->
+<insert id="registerMemberForTest">
+insert into member( name, userid, userpw, email )
+values ( #{name}, #{userid}, #{userpw}, #{email} )
+</insert>
+</mapper>
