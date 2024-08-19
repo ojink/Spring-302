@@ -47,17 +47,50 @@
 	<button class="btn btn-primary px-4" id="btn-save">변경</button>
 </div>
 
+<script src="<c:url value='/js/member.js'/>"></script>
 <script>
 $("#btn-save").on("click", function(){
+// 	if( tagIsValid() ){
+		//현재 비번이 정확인지 확인
+		$.ajax({
+			url: "correctPassword",
+			data: { userpw: $("[name=current]").val(), userid: "${loginInfo.userid}"  }
+		}).done(function( response ){
+			console.log( response )
+		})
+// 	}
+})
+
+//키보드입력시 바로 입력태그상태 표시하기
+$(".check-item").on("keyup", function(){
+	member.showStatus( $(this) );
+})
+
+//입력태그값이 유효한 상태인지 확인
+function tagIsValid(){
+	var ok = true;
+	
 	if( $("[name=current]").val()=="" ){
 		alert("현재 비밀번호를 입력하세요!");
 		$("[name=current]").focus();
+		ok = false;
 	}else{
-		//입력체크할 항목들
-		
+		//비번 입력체크할 항목들
+		$(".check-item").each(function(){
+			var status = member.tagStatus( $(this) );
+			console.log( status )
+			if( ! status.is ){
+				alert( "비밀번호 변경 불가\n" + status.desc );
+				$(this).focus();
+				ok = false;
+				return ok;
+			}
+		})
 		
 	}
-})
+	return ok;
+}
+
 
 </script>
 
