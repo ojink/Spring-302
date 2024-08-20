@@ -6,6 +6,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+#naver { background: url("<c:url value='/images/naver.png'/>") center / contain no-repeat #03c75a }
+#kakao { background: url("<c:url value='/images/kakao.png'/>") center / contain no-repeat #FEE500 }
+</style>
 </head>
 <body>
 
@@ -38,6 +42,12 @@
 						<button class="btn btn-primary form-control py-3">로그인</button>
 						
 					</form>
+					<div class="mt-3 d-flex gap-4">
+						<input type="button" class="btn form-control p-2" id="naver">
+						<input type="button" class="btn form-control p-2" id="kakao">
+					</div>
+					
+					
 				</div>
 				<div class="card-footer text-center py-3">
 					<div class="d-flex align-items-center justify-content-between my-2">
@@ -49,6 +59,12 @@
 		</div>
 	</div>
 </body>
+
+<script>
+$("#naver, #kakao").on("click", function(){
+	location = $(this).attr("id") + "Login"
+})
+</script>
 </html>
 
 

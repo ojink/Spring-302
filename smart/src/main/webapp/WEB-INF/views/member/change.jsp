@@ -49,16 +49,47 @@
 
 <script src="<c:url value='/js/member.js'/>"></script>
 <script>
+
+function resetPassword(){
+	$.ajax({
+		url: "resetPassword",
+		data: { userpw: $("[name=userpw]").val(), userid: "${loginInfo.userid}" }
+	}).done(function( response ){
+		if( response ){
+			alert("비밀번호가 변경되었습니다")
+			location = "<c:url value='/'/>"
+		}else{
+			alert("비밀번호 변경 실패ㅠㅠ")
+		}
+	})
+}
+
 $("#btn-save").on("click", function(){
-// 	if( tagIsValid() ){
+	if( tagIsValid() ){
 		//현재 비번이 정확인지 확인
 		$.ajax({
 			url: "correctPassword",
 			data: { userpw: $("[name=current]").val(), userid: "${loginInfo.userid}"  }
 		}).done(function( response ){
-			console.log( response )
+			//console.log( response )
+			if( response ){
+				//새비번 변경은 현재 비번과 다른 경우만 처리   
+				if( $("[name=userpw]").val() == $("[name=current]").val() ){
+					alert( "새 비밀번호가 현재 비밀번호와 같습니다\n" 
+							+ "새 비밀번호를 다시 입력하세요")
+					$("[name=userpw]").val("").focus().trigger("keyup")
+					
+				}else{				
+					//DB에 새 비번으로 변경
+					resetPassword()
+				}
+				
+			}else{
+				alert("현재 비밀번호가 정확하지 않습니다")
+				$("[name=current]").val("").focus()
+			}
 		})
-// 	}
+	}
 })
 
 //키보드입력시 바로 입력태그상태 표시하기
