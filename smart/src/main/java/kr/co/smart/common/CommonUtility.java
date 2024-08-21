@@ -1,5 +1,10 @@
 package kr.co.smart.common;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.mail.EmailException;
@@ -16,6 +21,52 @@ public class CommonUtility {
 	@Value("${spring.mail.host}") private String emailHost;
 	@Value("${spring.mail.username}") private String emailUser;
 	@Value("${spring.mail.password}") private String emailPass;
+	
+	
+	//Http통신API요청
+	public String requestAPI( HttpURLConnection con ) throws Exception{
+        int responseCode = con.getResponseCode();
+        BufferedReader br;
+        //System.out.print("responseCode="+responseCode);
+        if(responseCode==200) { // 정상 호출
+          br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        } else {  // 에러 발생
+          br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+        }
+        String inputLine;
+        StringBuffer res = new StringBuffer();
+        while ((inputLine = br.readLine()) != null) {
+          res.append(inputLine);
+        }
+        br.close();
+        
+        if(responseCode==200) {
+        	System.out.println( res.toString() ); //"{ 'a': 10, 'b': 20 }"
+        }
+        
+      return res.toString();			
+	}
+	
+	public String requestAPI( String apiURL, String property ) {
+	    try {
+	        HttpURLConnection con = (HttpURLConnection) (new URL(apiURL)).openConnection();
+	        con.setRequestMethod("GET");
+	        con.setRequestProperty("Authorization", property);
+	        apiURL = requestAPI( con );
+	    }catch(Exception e) {
+	    }
+        return apiURL; 
+	}
+	
+	public String requestAPI( String apiURL ) {
+	    try {
+	        HttpURLConnection con = (HttpURLConnection) (new URL(apiURL)).openConnection();
+	        con.setRequestMethod("GET");
+	        apiURL = requestAPI( con );
+	    }catch(Exception e) {
+	    }    
+	    return apiURL;
+	}
 	
 	
 	private void mailSender(HtmlEmail sender) {
@@ -67,6 +118,10 @@ public class CommonUtility {
 		url.append( request.getServerPort() );    // http://localhost:8080, http://127.0.0.1:80
 		url.append( request.getContextPath() );   // http://localhost:8080/iot, http://127.0.0.1:80/smart
 		return url.toString();
+	}
+	public String appURL(HttpServletRequest request, String path) {
+		// http://127.0.0.1:80/smart + /member/naverCallback
+		return new StringBuffer( appURL(request) ).append(path).toString();
 	}
 	
 }

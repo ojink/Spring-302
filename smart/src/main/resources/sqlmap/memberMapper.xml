@@ -2,6 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.member.MemberMapper">
 
+<!-- 회원가입 -->
+<insert id="registerMember">
+insert into member (userid, userpw, name, email, gender, birth
+					, profile, phone, post, address1, address2, social )
+values (#{userid}, #{userpw, jdbcType=VARCHAR}, #{name}, #{email, jdbcType=VARCHAR}, #{gender}
+	, #{birth, jdbcType=VARCHAR}, #{profile, jdbcType=VARCHAR}, #{phone, jdbcType=VARCHAR}
+	, #{post, jdbcType=VARCHAR}, #{address1, jdbcType=VARCHAR}, #{address2, jdbcType=VARCHAR}
+	, #{social, jdbcType=VARCHAR} )						
+</insert>
+
+<!-- 회원정보 변경 -->
+<update id="updateMember">
+update member
+set name = #{name}, email = #{email, jdbcType=VARCHAR}, gender = #{gender}
+		, birth = #{birth, jdbcType=VARCHAR}, profile = #{profile, jdbcType=VARCHAR}
+		, phone = #{phone, jdbcType=VARCHAR}, post = #{post, jdbcType=VARCHAR}
+		, address1 = #{address1, jdbcType=VARCHAR}, address2 = #{address2, jdbcType=VARCHAR}
+where userid = #{userid}
+</update>
+
+
+
 <!-- 비밀번호 변경저장 -->
 <update id="updatePassword">
 update member set userpw = #{userpw} where userid = #{userid}
