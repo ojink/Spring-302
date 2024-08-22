@@ -23,7 +23,9 @@ a.text-link:hover { text-decoration: underline; color: var(--bs-link-hover-color
 .w-px250 { width: 250px !important } 
 .w-px300 { width: 300px !important } 
 
-
+.profile img { width:100%; height:100%; border-radius: 50% }
+.font-profile { height:100%; color: var(--bs-gray-500) }
+.px40 { width:40px !important; height: 40px !important }
 
 
 

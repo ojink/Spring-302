@@ -49,6 +49,21 @@ class SmartApplicationTests {
 		
 	}
 	
+	@Test
+	void updatePassword() {
+		Scanner scan = new Scanner(System.in);
+		
+		MemberVO vo = new MemberVO();
+		System.out.print("아이디: ");
+		vo.setUserid( scan.next() );
+		
+		System.out.print("비번: ");
+		//입력한 비밀번호를 암호화시켜서 DB에 저장할 수 있도록 암호화하기
+		vo.setUserpw(  passwordEncoder.encode( scan.next() ) );
+		scan.close();
+		member.updatePassword(vo);
+		
+	}
 	//회원가입(회원정보저장)
 	@Test
 	void join() {

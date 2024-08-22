@@ -85,15 +85,7 @@ public class MemberController {
 	}
 	
 	
-	//로그아웃 처리 요청
-	@RequestMapping("/logout")
-	public String logout(HttpSession session) {
-		//세션의 로그인정보를 삭제하기
-		session.removeAttribute("loginInfo");
-		//응답화면-웰컴화면
-		return "redirect:/";
-	}
-	
+
 	
 	//로그인 처리 요청
 	@ResponseBody @RequestMapping("/smartLogin")

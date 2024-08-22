@@ -23,6 +23,111 @@ public class SocialController {
 	
 	@Value("${naver.client-id}") private String naverId;
 	@Value("${naver.client-secret}") private String naverSecret;
+	@Value("${kakao.client-id}") private String kakaoId;
+	
+	//로그아웃 처리 요청
+	@RequestMapping("/logout")
+	public String logout(HttpSession session, HttpServletRequest request) {
+		MemberVO vo = (MemberVO)session.getAttribute("loginInfo");
+		//세션의 로그인정보를 삭제하기
+		session.removeAttribute("loginInfo");
+		
+		//curl -v -G GET "https://kauth.kakao.com/oauth/logout
+		//?client_id=${YOUR_REST_API_KEY}
+		//&logout_redirect_uri=${YOUR_LOGOUT_REDIRECT_URI}"
+		//카카오로그인 한 경우만 
+		if( "K".equals(vo.getSocial()) ) {
+			StringBuffer url = new StringBuffer("https://kauth.kakao.com/oauth/logout");
+			url.append("?client_id=").append(kakaoId);
+			url.append("&logout_redirect_uri=").append( common.appURL(request) );
+			return "redirect:" + url.toString();
+		}else
+			//응답화면-웰컴화면
+			return "redirect:/";
+	}
+		
+	
+	//카카오로그인처리 요청
+	@RequestMapping("/kakaoLogin")
+	public String kakaoLogin(HttpServletRequest request) {
+		//인가 코드 받기
+		//https://kauth.kakao.com/oauth/authorize?response_type=code
+		//&client_id=${REST_API_KEY}
+		//&redirect_uri=${REDIRECT_URI}
+		StringBuffer url = new StringBuffer(
+				"https://kauth.kakao.com/oauth/authorize?response_type=code");
+		url.append("&client_id=").append(kakaoId);
+		url.append("&redirect_uri=").append( common.appURL(request, "/member/kakaoCallback") );
+		return "redirect:" + url.toString();
+	}
+	
+	@RequestMapping("/kakaoCallback")
+	public String kakaoCallback(String code, HttpSession session) {
+		if( code == null ) return "redirect:login";  //카카오로그인 실패시 로그인화면으로 연결
+		
+		//토큰 받기: 인가 코드로 토큰 발급을 요청
+//		curl -v -X POST "https://kauth.kakao.com/oauth/token" \
+//		 -d "grant_type=authorization_code" \
+//		 -d "client_id=${REST_API_KEY}" \
+//		 -d "code=${AUTHORIZE_CODE}"
+		StringBuffer url = new StringBuffer(
+				"https://kauth.kakao.com/oauth/token?grant_type=authorization_code");
+		url.append("&client_id=").append(kakaoId);
+		url.append("&code=").append(code);
+		String response = common.requestAPI( url.toString() );
+		JSONObject json = new JSONObject( response );
+		String type = json.getString("token_type");
+		String token = json.getString("access_token");
+		
+		//사용자 정보 가져오기
+//		curl -v -G GET "https://kapi.kakao.com/v2/user/me" \
+//		  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+		response = common.requestAPI("https://kapi.kakao.com/v2/user/me", type + " " + token);
+		json = new JSONObject( response );
+		if( ! json.isEmpty() ) {
+			String id = json.get("id").toString();
+			//id 를 제외한 사용자 정보가 kakao_account 에 있다
+			json = json.getJSONObject("kakao_account");
+			String email = hasKey(json, "email");	
+			String gender = hasKey(json, "gender", "female").equals("female") ? "여" : "남" ; //female/male -> 여/남
+			String name = hasKey(json, "name");
+			String phone = hasKey(json, "phone_number");
+			
+			json = json.getJSONObject("profile");
+			String profile = hasKey(json, "profile_image_url");
+			if( name.isEmpty() ) name = hasKey(json, "nickname", "무명씨");
+			
+			//카카오 프로필정보를 사용자정보로 관리하도록 MemberVO에 저장하기
+			MemberVO vo = new MemberVO();
+			vo.setSocial("K");
+			vo.setUserid(id);
+			vo.setEmail(email);
+			vo.setGender(gender);
+			vo.setName(name);
+			vo.setPhone(phone);
+			vo.setProfile(profile);
+			
+			//카카오로그인이 처음이면 insert 아니면 update
+			if( member.getOneMember(id)==null ) {
+				member.registerMember(vo); 
+			}else {
+				member.updateMember(vo);
+			}
+			session.setAttribute("loginInfo", vo);
+		}
+		
+		return "redirect:/";   // 카카오로그인 성공시 웰컴화면으로 연결
+	}
+	
+	//카의 존재유무에 따라 데이터처리하기
+	private String hasKey(JSONObject json, String key) {
+		return json.has(key) ? json.getString(key) : "";
+	}
+	//기본값을 지정해야 하는 경우
+	private String hasKey(JSONObject json, String key, String defaultValue) {
+		return json.has(key) ? json.getString(key) : defaultValue;
+	}
+	
 	
 	//네이버로그인처리 요청
 	@RequestMapping("/naverLogin")
@@ -75,13 +180,13 @@ public class SocialController {
 		if( json.getString("resultcode").equals("00") ) {
 			json = json.getJSONObject("response");
 			String id = json.getString("id"); //네이버 아이디마다 고유하게 발급되는 값
-			String email = json.getString("email");
-			String name = json.getString("nickname");
-			String profile = json.getString("profile_image");
+			String email = hasKey(json, "email");
+			String name = hasKey(json, "nickname");
+			String profile = hasKey(json, "profile_image");
 			// - F: 여성, M: 남성, U: 확인불가 -> F:여, 나머지:남
-			String gender = json.getString("gender").equals("F") ? "여" : "남" ;
-			String phone = json.getString("mobile");
-			if( name.isEmpty() ) name = json.getString("name");
+			String gender = hasKey(json, "gender", "M").equals("F") ? "여" : "남" ;
+			String phone =  hasKey(json, "mobile");
+			if( name.isEmpty() ) name = hasKey(json, "name", "익명씨");
 			
 			//네이버 프로필정보를 사용자정보로 관리하도록 MemberVO에 담기
 			MemberVO vo = new MemberVO();
