@@ -22,6 +22,14 @@ public class MemberController {
 	private PasswordEncoder password;
 
 	
+	//회원가입화면 요청
+	@RequestMapping("/join")
+	public String join(HttpSession session) {
+		session.setAttribute("category", "join");
+		return "default/member/join";
+	}
+	
+	
 	//새비밀번호로 변경저장 처리 요청
 	@ResponseBody @RequestMapping("/user/resetPassword")
 	public boolean resetPassword(MemberVO vo, String userpw) {

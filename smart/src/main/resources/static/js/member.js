@@ -2,6 +2,10 @@
  *  회원관련처리 
  */
 
+$("#btn-post").on("click", function(){
+	findPost( $("[name=post]"), $("[name=address1]"), $("[name=address2]") )
+})
+
 var member = {
 	//태그별로 상태확인
 	tagStatus: function( tag, keyup ){
