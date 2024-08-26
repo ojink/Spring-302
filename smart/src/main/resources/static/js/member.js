@@ -6,11 +6,56 @@ $("#btn-post").on("click", function(){
 	findPost( $("[name=post]"), $("[name=address1]"), $("[name=address2]") )
 })
 
+
+//키보드입력시 바로 입력태그상태 표시하기
+$(".check-item").on("keyup", function(e){
+	//아이디에서 엔터하는 경우 중복확인하기
+	if( $(this).is("[name=userid]") && e.keyCode==13 ){
+		idCheck()
+	}else
+		member.showStatus( $(this) );
+})
+
+
 var member = {
 	//태그별로 상태확인
 	tagStatus: function( tag, keyup ){
 		if( tag.is("[name=userpw]") )			return this.userpwStatus( tag.val(), keyup );
 		else if( tag.is("[name=userpw_ck]") )	return this.userpwCheckStatus( tag.val() );
+		else if( tag.is("[name=userid]") )		return this.useridStatus( tag.val() )
+		else if( tag.is("[name=email]") )		return this.emailStatus( tag.val() );
+	},
+	
+	//이메일상태 확인
+	emailStatus: function( email ){
+		var reg = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/i;
+		if( email == "" )				return this.common.empty;
+		else if( reg.test(email) )		return this.email.valid;
+		else                        	return this.email.invalid;
+	},
+	
+	//이메일상태값
+	email: {
+		valid:   { is: true,    desc: "형식이 유효합니다" },
+		invalid: { is: false,   desc: "형식이 유효하지 않습니다" }
+	},
+	
+	//아이디상태 확인
+	useridStatus: function( id ){
+		var reg = /[^a-z0-9]/g
+		if( id=="" )				return this.common.empty;
+		else if( reg.test(id) )		return this.userid.invalid;
+		else if( id.length<5 )		return this.common.min;
+		else if( id.length>10 )		return this.common.max;
+		else						return this.userid.valid;
+	},
+	
+	//아이디의 상태값
+	userid: {
+		valid:    { is: true,    desc: "중복확인하세요" },
+		invalid:  { is: false,   desc: "영문 소문자,숫자만 입력하세요" },
+		usable:   { is: true,    desc: "사용가능 합니다" },
+		unUsable: { is: false,   desc: "이미 사용중입니다" }
 	},
 	
 	//공통 상태값
@@ -60,8 +105,10 @@ var member = {
 	
 	
 	//입력상태표시
-	showStatus: function( tag ){
-		var status = this.tagStatus( tag, true );  //키보드입력여부 추가
+	showStatus: function( tag, status ){
+		if( status == undefined ){
+			status = this.tagStatus( tag, true );  //키보드입력여부 추가
+		}
 		tag.closest(".input-check").find(".desc")
 								   .text( status.desc )
 								   .removeClass("text-success text-danger")

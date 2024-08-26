@@ -22,6 +22,13 @@ public class MemberController {
 	private PasswordEncoder password;
 
 	
+	//아이디중복확인 요청
+	@ResponseBody @RequestMapping("/idCheck")
+	public boolean idCheck(String userid) {
+		return false;
+	}
+	
+	
 	//회원가입화면 요청
 	@RequestMapping("/join")
 	public String join(HttpSession session) {

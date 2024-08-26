@@ -92,11 +92,6 @@ $("#btn-save").on("click", function(){
 	}
 })
 
-//키보드입력시 바로 입력태그상태 표시하기
-$(".check-item").on("keyup", function(){
-	member.showStatus( $(this) );
-})
-
 //입력태그값이 유효한 상태인지 확인
 function tagIsValid(){
 	var ok = true;

@@ -32,34 +32,43 @@
 	</td>
 </tr>
 <tr><th><span>*</span>아이디</th>
-	<td><div class="row">
+	<td><div class="row input-check">
 			<div class="col-auto">
-				<input type="text" name="userid" class="form-control">
+				<input type="text" name="userid" class="form-control check-item">
 			</div>
+			<div class="col-auto">
+				<a class="btn btn-primary" id="btn-userid">중복확인</a>
+			</div>
+			<div class="col-auto desc fw-bold"></div>
+			<div class="mt-2">아이디는 영문 소문자나 숫자 5자~10자</div>
 		</div>
 	</td>
 </tr>
 <tr><th><span>*</span>비밀번호</th>
-	<td><div class="row">
+	<td><div class="row input-check">
 			<div class="col-auto">
-				<input type="password" name="userpw" class="form-control">
+				<input type="password" name="userpw" class="form-control check-item">
 			</div>
+			<div class="col-auto desc fw-bold"></div>
+			<div class="mt-2">비밀번호는 영문 대/소문자,숫자 조합 5자~10자</div>
 		</div>
 	</td>
 </tr>
 <tr><th><span>*</span>비밀번호확인</th>
-	<td><div class="row">
+	<td><div class="row input-check">
 			<div class="col-auto">
-				<input type="password" name="userpw_ck" class="form-control">
+				<input type="password" name="userpw_ck" class="form-control check-item">
 			</div>
+			<div class="col-auto desc fw-bold"></div>
 		</div>
 	</td>
 </tr>
 <tr><th><span>*</span>이메일</th>
-	<td><div class="row">
+	<td><div class="row input-check">
 			<div class="col-auto">
-				<input type="text" name="email" class="form-control">
+				<input type="text" name="email" class="form-control check-item">
 			</div>
+			<div class="col-auto desc fw-bold"></div>
 		</div>
 	</td>
 </tr>
@@ -88,6 +97,7 @@
 					<input type="file" name="file" 
 						class="d-none form-control image-only file-single" accept="image/*">
 				</label>
+				<a class="btn btn-outline-danger d-none file-remove">삭제</a>
 			</div>
 		</div>
 	</td>
@@ -137,6 +147,34 @@
 
 <script src="<c:url value='/js/member.js' />"></script>
 <script>
+
+$("#btn-userid").on("click", function(){
+	idCheck()
+})
+
+//아이디 중복확인
+function idCheck(){
+	var id = $("[name=userid]")
+	//입력이 유효한지 확인 후 유효하지 않으면 DB에서 확인 불필요
+	var status = member.tagStatus( id )
+	if( status.is ){
+		$.ajax({
+			url: "idCheck",
+			data: { userid: id.val() }
+		}).done(function( response ){
+			//사용가능:true   사용중:false
+			var status = response ? member.userid.usable 
+								  : member.userid.unUsable;
+			member.showStatus( id, status )
+		})
+		
+		
+	}else{
+		alert("아이디 중복확인 불필요!\n" + status.desc)
+		id.focus()
+	}
+}
+
 $(function(){
 	//생년월일자를 13세이상으로 선택가능하게 제한하기
 	var endDay = new Date()
