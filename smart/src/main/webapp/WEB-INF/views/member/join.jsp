@@ -17,7 +17,12 @@
 					</div>
 			
 <div class="mb-2 text-danger fw-bold">* 는 필수입력항목입니다</div>
-<form method="post" action="register">
+<form method="post" action="register" enctype="multipart/form-data">
+<!-- 
+파일업로드하기 위한 설정
+1. form 태그의 method: post
+2. form 태그로 파일전송하도록 지정 : enctype="multipart/form-data"
+ -->
 <table class="table tb-row">
 <colgroup>
 	<col width="200px">
@@ -34,7 +39,7 @@
 <tr><th><span>*</span>아이디</th>
 	<td><div class="row input-check">
 			<div class="col-auto">
-				<input type="text" name="userid" class="form-control check-item">
+				<input type="text" name="userid" title="아이디" class="form-control check-item">
 			</div>
 			<div class="col-auto">
 				<a class="btn btn-primary" id="btn-userid">중복확인</a>
@@ -47,7 +52,7 @@
 <tr><th><span>*</span>비밀번호</th>
 	<td><div class="row input-check">
 			<div class="col-auto">
-				<input type="password" name="userpw" class="form-control check-item">
+				<input type="password" name="userpw" title="비밀번호" class="form-control check-item">
 			</div>
 			<div class="col-auto desc fw-bold"></div>
 			<div class="mt-2">비밀번호는 영문 대/소문자,숫자 조합 5자~10자</div>
@@ -57,7 +62,7 @@
 <tr><th><span>*</span>비밀번호확인</th>
 	<td><div class="row input-check">
 			<div class="col-auto">
-				<input type="password" name="userpw_ck" class="form-control check-item">
+				<input type="password" name="userpw_ck" title="비밀번호확인" class="form-control check-item">
 			</div>
 			<div class="col-auto desc fw-bold"></div>
 		</div>
@@ -66,7 +71,7 @@
 <tr><th><span>*</span>이메일</th>
 	<td><div class="row input-check">
 			<div class="col-auto">
-				<input type="text" name="email" class="form-control check-item">
+				<input type="text" name="email" title="이메일" class="form-control check-item">
 			</div>
 			<div class="col-auto desc fw-bold"></div>
 		</div>
@@ -147,6 +152,42 @@
 
 <script src="<c:url value='/js/member.js' />"></script>
 <script>
+$("#btn-join").on("click", function(){
+	
+	if( $("[name=name]").val()=="" ){
+		alert("성명을 입력하세요!")
+		$("[name=name]").focus()
+		return;
+	}
+	
+	//유효성확인되면 서브밋하기
+	if( validStatus() ) $("form").submit()
+})
+
+//각 태그입력유효성 재확인
+function validStatus(){
+	var valid = true;
+	
+	$(".check-item").each(function(){
+		var desc = $(this).closest(".input-check").find(".desc")
+		//아이디는 사용가능 아닌 경우 유효하지 않음
+		if( $(this).is("[name=userid]") && ! desc.text().includes("사용가능")  ){
+			valid = false;
+		}else if( ! desc.hasClass("text-success") ){
+			valid = false;
+		}
+		
+		if( ! valid ){ //회원가입불가 이유 표시하기
+			alert("회원가입 불가!\n" + $(this).attr("title") + " " + desc.text() )
+			$(this).focus()
+			return valid;
+		}
+	})
+	
+	return valid;
+}
+
+
 
 $("#btn-userid").on("click", function(){
 	idCheck()
