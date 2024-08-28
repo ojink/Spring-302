@@ -5,6 +5,9 @@ spring:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
+    hiddenmethod:
+      filter:
+        enabled: true
   config:
     import: classpath:info.yml
   datasource:

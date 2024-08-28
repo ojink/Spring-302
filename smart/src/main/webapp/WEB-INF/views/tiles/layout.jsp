@@ -11,6 +11,7 @@
 	<c:when test="${category eq 'vi'}"> <c:set var="title" value="- 시각화"/>  </c:when>
 	<c:when test="${category eq 'login'}"> <c:set var="title" value="- 로그인"/>  </c:when>
 	<c:when test="${category eq 'change'}"> <c:set var="title" value="- 비밀번호변경"/>  </c:when>
+	<c:when test="${category eq 'my'}"> <c:set var="title" value="- 내 정보"/>  </c:when>
 </c:choose>
 
 <!DOCTYPE html>
@@ -91,7 +92,7 @@
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     	<c:if test="${empty loginInfo.social }">
                                         <a class="dropdown-item" href="#!">아이디: ${loginInfo.userid}</a>
-                                        <a class="dropdown-item" href="#!">My Page</a>
+                                        <a class="dropdown-item" href="<c:url value='/member/user/myPage'/>">My Page</a>
                                         <a class="dropdown-item" href="<c:url value='/member/user/changePassword'/>">비밀번호 변경</a>
                                         <div class="dropdown-divider"></div>
                                         </c:if>
