@@ -42,7 +42,7 @@ select * from member where userid = #{userid}
 
 <!-- 테스트용 회원정보 저장 -->
 <insert id="registerMemberForTest">
-insert into member( name, userid, userpw, email )
-values ( #{name}, #{userid}, #{userpw}, #{email} )
+insert into member( name, userid, userpw, email, role )
+values ( #{name}, #{userid}, #{userpw}, #{email}, #{role} )
 </insert>
 </mapper>

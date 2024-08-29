@@ -30,10 +30,38 @@ public class MemberController {
 	
 	//내정보 변경저장 처리 요청
 	@PutMapping("/user/myPage/modify")
-	public String myPage( MemberVO vo, HttpSession session) {
+	public String myPage( MemberVO vo, boolean img, MultipartFile file
+						,  HttpSession session, HttpServletRequest request) {
+		//원래 프로필정보를 조회해오기
+		MemberVO user = mapper.getOneMember(vo.getUserid());
+		
+		//프로필을 첨부하지 않은 경우
+		if( file.isEmpty() ) {
+			//원래X -> 화면imgX -> 처리X
+			//원래O -> 화면imgO -> DB저장할 vo에 담기
+			//원래O -> 화면프로필삭제:화면imgX -> 물리적파일 삭제
+			if( img ) {
+				vo.setProfile( user.getProfile() );
+			}
+			
+		}else {
+		//프로필을 첨부한 경우
+			//원래X -> 새로첨부 -> DB저장할 vo의 profile에 담기
+			//원래O -> 바꿔첨부 -> DB저장할 vo의 profile에 담기 + 물리적파일 삭제 
+			vo.setProfile( common.fileUpload("profile", file, request) );
+		}
+		
 		//화면에서 입력한 정보로 DB에 변경저장
 		//변경된 정보가 화면에 반영되도록 세션정보를 변경하기
 		if( mapper.updateMember(vo)==1 ) {
+			//물리적파일삭제
+			//원래O -> 화면imgX -> 물리적파일 삭제
+			//원래O -> 바꿔첨부 -> DB저장할 vo의 profile에 담기 + 물리적파일 삭제 
+			if( user.getProfile() != null ) {
+				if( ! img || ! file.isEmpty() ) {
+					common.fileDelete( user.getProfile(), request );
+				}
+			}
 			session.setAttribute("loginInfo", vo);
 		}
 		return "redirect:/";

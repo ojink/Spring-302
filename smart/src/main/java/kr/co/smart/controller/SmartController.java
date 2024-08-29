@@ -18,8 +18,8 @@ public class SmartController {
 	@RequestMapping("/")
 	public String layout(HttpSession session) {
 		//임시 로그인해두기- 나중에 삭제/주석 --------------------
-		String userid = "test001";
-		String userpw = "Test001";
+		String userid = "admin";
+		String userpw = "Admin";
 		//화면에서 입력한 아이디/비번이 일치하는 회원정보 조회하기
 		MemberVO vo = memberMapper.getOneMember(userid);
 		boolean match = false;

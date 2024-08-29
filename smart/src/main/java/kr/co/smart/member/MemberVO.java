@@ -7,5 +7,5 @@ import lombok.Setter;
 public class MemberVO {
 	private String name, userid, userpw, gender, email
 					, profile, birth, phone, post
-					, address1, address2, social;
+					, address1, address2, social, role;
 }

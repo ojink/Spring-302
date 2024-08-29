@@ -11,8 +11,13 @@ phone      varchar2(13), /*전화번호*/
 post       varchar2(5), /*우편번호*/ 
 address1   varchar2(300), /*주소*/
 address2   varchar2(100), /*주소*/
-social     varchar2(1)   /* 소셜: N/K/G(네이버/카카오) */
+social     varchar2(1),   /* 소셜: N/K/G(네이버/카카오) */
+role       varchar2(10) default 'USER'  /* 관리자여부: USER/ADMIN */
 );
+
+--관리자여부를 관리할 컬럼 추가
+alter table member add ( role       varchar2(10) default 'USER' );
+
 
 --소셜로그인에 따른 제약조건변경
 alter table member modify( userpw null, email null);
@@ -28,4 +33,14 @@ select * from member;
 --where userid='hong' and userpw='1234';
 
 select userid, profile from member;
+
+update member set userid = userid || 2024 where length(userid) <5;
+commit;
+
+update member set profile = replace(profile, '2024/08/27', '2024/08/27/') 
+;
+
+desc member;
+
+
 
