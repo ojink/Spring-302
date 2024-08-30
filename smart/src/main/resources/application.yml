@@ -21,7 +21,10 @@ spring:
     username: ${naver.email.username}
     password: ${naver.email.password}
     default-encoding: utf-8
-
+  servlet:
+    multipart:
+      max-file-size: 10MB
+        
 server:
   #port: 80
   servlet:

@@ -36,13 +36,15 @@ $(function() {
 		
 		var preview = $(this).closest(".file-info").find(".file-preview")
 		var remove = $(this).closest(".file-info").find(".file-remove");
+		var filename = $(this).closest(".file-info").find(".file-name");
 		
 		var attached = this.files[0];
 		if( attached ){ //선택한 파일이 있는 경우
 			//파일크기제한하는 경우
 			if( fileSizeOver(attached, $(this)) ) return;
 			
-			remove.removeClass("d-none") //삭제버튼 보이게
+			remove.removeClass("d-none") 	//삭제버튼 보이게
+			filename.text( attached.name ) 	//선택한 파일명 보이게
 			
 			//이미지만 첨부해야만 하는 경우
 			if( $(this).hasClass("image-only") ){
@@ -81,13 +83,7 @@ $(function() {
 	}) //end of filechange
 	//------------------------------------
 	
-	
-	//파일삭제 클릭시 선택한 파일정보 삭제
-	$(".file-info .file-remove").on("click", function(){
-		singleFile = "";
-		setFileInfo( $(this) )
-	})
-	
+
 	
 }); //end of $(function(){})
 
@@ -105,6 +101,8 @@ function setFileInfo( tag ){
 		//선택한 파일정보 삭제
 		info.find(".file-single").val("");
 		info.find(".file-remove").addClass("d-none") //삭제버튼 안보이게
+		info.find(".file-name").empty(); 			 //파일명 안보이게
+		
 		//프로필은 기본이미지로 지정
 		var preview = info.find(".file-preview")
 		if( preview.hasClass("profile") ){
@@ -120,11 +118,18 @@ $(document)
 	//폰트이미지가 동적으로 만들어지므로 문서에 이벤트 등록
 	$(this).addClass("d-none").prev(".date").val("");
 })
+.on("click", ".file-info .file-remove", function(){
+	//파일삭제 클릭시 선택한 파일정보 삭제
+	singleFile = "";
+	setFileInfo( $(this) )
+})
+
+
 
 //파일크기제한하기
 function fileSizeOver(file, tag){
 	//1K=1024b, 1M=1024*1024b, 1G=1024*1024*1024b
-	if( file.size > 1024*200  ){//10M(1024*1024*10) / 200K
+	if( file.size > 1024*1024*10  ){//10M(1024*1024*10) / 200K(1024*200)
 		alert("10Mb 를 넘는 파일은 첨부할 수 없습니다")
 		setFileInfo( tag )
 		return true;
@@ -149,6 +154,21 @@ function findPost( post, address1, address2 ){
 }
 
 
+//필수입력항목 입력여부 확인
+function isNotEmpty(){
+	var ok = true;
+	
+	$(".check-empty").each(function(){
+		if( $(this).val()=="" ){
+			alert( $(this).attr("title") + " 입력하세요!" )
+			$(this).focus()
+			ok = false;
+			return ok;
+		}
+	})
+	
+	return ok;
+}
 
 
 

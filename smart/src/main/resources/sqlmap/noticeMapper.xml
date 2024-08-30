@@ -2,10 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.notice.NoticeMapper">
 
+<!-- 공지글 신규저장 -->
+<insert id="registerNotice">
+insert into notice ( title, content, writer, filename, filepath )
+values ( #{title}, #{content}, #{writer}
+		, #{filename, jdbcType=VARCHAR}, #{filepath, jdbcType=VARCHAR} )
+</insert>
+
+<!-- 공지글 총건수 조회  -->
+<select id="countOfNotice" resultType="integer">
+select count(*) from notice
+</select>
+
 <!-- 공지글목록조회 -->
 <select id="getListOfNotice" resultType="notice">
-select name, n.* 
-from notice n left outer join member m on m.userid = n.writer
+select * 
+from (select row_number() over(order by id) no, name, n.* 
+	  from notice n left outer join member m on m.userid = n.writer) n 
+where no between #{beginList} and #{endList}
+order by no desc
 </select>
 
 </mapper>
