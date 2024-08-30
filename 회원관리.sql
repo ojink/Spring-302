@@ -17,7 +17,7 @@ role       varchar2(10) default 'USER'  /* 관리자여부: USER/ADMIN */
 
 --관리자여부를 관리할 컬럼 추가
 alter table member add ( role       varchar2(10) default 'USER' );
-
+select userid, role from member;
 
 --소셜로그인에 따른 제약조건변경
 alter table member modify( userpw null, email null);
@@ -29,7 +29,7 @@ alter table member add ( social     varchar2(1) );
 update member set email = 'ojink2@naver.com';
 commit;
 
-select * from member;
+select * from member where role = 'ADMIN';
 --where userid='hong' and userpw='1234';
 
 select userid, profile from member;

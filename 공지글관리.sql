@@ -21,6 +21,14 @@ values ( '두번째 테스트 공지글', '두번째 테스트 공지글 입니�
 
 commit;
 
+create or replace trigger trg_notice
+    before insert on notice
+    for each row
+begin
+    select seq_notice.nextval into :new.id from dual;
+end;
+/
+
 
 select * from notice;
 
