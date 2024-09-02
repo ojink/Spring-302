@@ -23,6 +23,18 @@ public class NoticeController {
 	private final NoticeMapper mapper;
 	private final CommonUtility common;
 
+	//공지글 정보화면 요청
+	@RequestMapping("/info")
+	public String info(int id, PageVO page, Model model) {
+		mapper.updateReadCount(id); 	//조회수처리
+		//해당 공지글정보를 DB에서 조회해오기 -> 정보화면에 출력할 수 있도록 Model객체에 담기
+		NoticeVO vo = mapper.getOneNotice(id);
+		model.addAttribute("vo", vo);
+		model.addAttribute("page", page);
+		model.addAttribute("crlf", "\r\n");
+		return "notice/info";
+	}
+	
 	//공지글 저장처리 요청
 	@PostMapping("/register")
 	public String register(NoticeVO vo, MultipartFile file, HttpServletRequest request) {
@@ -51,7 +63,7 @@ public class NoticeController {
 		//DB에서 공지글목록을 조회해오기 -> 화면에 출력할 수 있도록 Model객체에 담기
 		//List<NoticeVO> list = mapper.getListOfNotice();
 		//model.addAttribute("list", list);
-		page.setTotalList( mapper.countOfNotice() );
+		page.setTotalList( mapper.countOfNotice(page) );
 		page.setList( mapper.getListOfNotice(page) );
 		model.addAttribute("page", page);
 		

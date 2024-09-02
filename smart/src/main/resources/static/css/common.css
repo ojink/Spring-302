@@ -13,7 +13,7 @@ table.tb-list tr { height: 45px }
 table.tb-row tr { height: 55px }
 
 a:link, a:visited { text-decoration: none; color: initial; }
-a.text-link:hover { text-decoration: underline; color: var(--bs-link-hover-color);  }
+.text-link:hover { text-decoration: underline; color: var(--bs-link-hover-color);  }
 
 .w-px40 { width: 40px !important } 
 .w-px80 { width: 80px !important } 

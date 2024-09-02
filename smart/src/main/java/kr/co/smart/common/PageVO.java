@@ -16,6 +16,7 @@ public class PageVO {
 	private int beginPage, endPage;//보여질 페이지번호: 끝/시작 페이지번호
 	private boolean prev, next;	    //이전/다음 존재여부
 	private List<Object> list;  	//글목록(공지글,방명록,QnA,...)
+	private String search, keyword;	//검색조건, 검색어
 	
 	public void setTotalList(int totalList) {
 		this.totalList = totalList;
