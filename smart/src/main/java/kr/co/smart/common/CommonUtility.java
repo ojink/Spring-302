@@ -2,20 +2,25 @@ package kr.co.smart.common;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +35,7 @@ public class CommonUtility {
 	@Value("${spring.mail.password}") private String emailPass;
 	@Value("${smart.upload}")  private String uploadPath;  // d://smart/app/upload/
 	
+	
 	//첨부된 파일 삭제하기-물리적삭제
 	public void fileDelete(String fileInfo, HttpServletRequest request) {
 		if( fileInfo != null ) {
@@ -39,6 +45,32 @@ public class CommonUtility {
 		}
 	}
 	
+	//파일 존재유무 확인
+	public void fileExist(String filepath, Model model, HttpServletRequest request) {
+		if( filepath != null ) {
+			//물리적인 파일의 존재유무 확인
+			filepath = toRealFilePath(filepath, request);
+			model.addAttribute("file", new File( filepath ).exists() );
+		}
+	}
+	
+	//파일 다운로드
+	public void fileDownload(String filepath, String filename
+							, HttpServletRequest request
+							, HttpServletResponse response) throws Exception {
+		// url경로:      http://localhost:8080/smart/upload/ notice/2024/09/02/f1b6d4d3-e799-4437-b9ab-8d41d93ac0bf.pdf
+		// 물리적실제경로                 d://smart/app/upload/ notice/2024/09/02/f1b6d4d3-e799-4437-b9ab-8d41d93ac0bf.pdf
+		filepath = toRealFilePath(filepath, request);
+		
+		//클라이언트컴에 쓰기작업할 파일의 타입
+		String mime = request.getServletContext().getMimeType(filename);
+		response.setContentType(mime);
+		
+		//파일명에 있는 한글 처리, 공백 처리
+		filename = URLEncoder.encode( filename, "utf-8" ).replaceAll("\\+", "%20");
+		response.setHeader("content-disposition", "attachment; filename=" + filename);
+		FileCopyUtils.copy( new FileInputStream(filepath), response.getOutputStream());
+	}
 	
 	//파일 업로드
 	public String fileUpload(String category, MultipartFile file

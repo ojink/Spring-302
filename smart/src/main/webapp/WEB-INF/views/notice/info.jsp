@@ -34,12 +34,22 @@
 </tr>
 <tr><th>첨부파일</th>
 	<td colspan="5">
+		<c:if test="${ ! empty vo.filename }">
 		<div class="d-flex">
-			<label role="button" class="d-flex col-auto text-link gap-3">
+			<!-- 물리적 파일이 존재하면 다운로드 가능 -->
+			<c:if test="${file}">
+			<label role="button" class="d-flex col-auto text-link gap-3 file-download">
 				<span>${vo.filename }</span>
 				<i class="fs-3 fa-regular fa-circle-down"></i>
 			</label>
+			</c:if>
+			
+			<!-- 물리적 파일이 존재하지 않으면 다운로드 불가 -->
+			<c:if test="${! file}">
+				<del class="text-danger">${vo.filename }</del>
+			</c:if>
 		</div>
+		</c:if>
 	</td>
 </tr>
 </table>
@@ -49,16 +59,23 @@
 	
 	<!-- 로그인한 사용자가 쓴 글에 대해서만 수정/삭제 가능 -->
 	<c:if test="${loginInfo.userid == vo.writer}">
-	<button class="btn btn-primary" id="btn-list">정보수정</button>
-	<button class="btn btn-primary" id="btn-list">정보삭제</button>
+	<button class="btn btn-primary" id="btn-modify">정보수정</button>
+	<button class="btn btn-primary" id="btn-delete">정보삭제</button>
 	</c:if>
 	
 </div>
 
 <script>
-$("#btn-list").on("click", function(){
-	location = "list"
-			+ "?pageNo=${page.pageNo}&search=${page.search}&keyword=${page.keyword}"
+$(".file-download").on("click", function(){
+	location = "<c:url value='/notice/download?id=${vo.id}'/>"
+})
+
+$("#btn-list, #btn-modify").on("click", function(){
+	var id = $(this).attr("id") //btn-list, btn-modify
+	id = id.substr( id.indexOf("-")+1 ) // list, modify
+	
+	location = id
+			+ "?id=${vo.id}&pageNo=${page.pageNo}&search=${page.search}&keyword=${page.keyword}"
 })
 </script>
 
