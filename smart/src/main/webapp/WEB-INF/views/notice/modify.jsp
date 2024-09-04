@@ -54,12 +54,14 @@ $(function(){
 })
 
 $("#btn-save").on("click", function(){
+	var filename = $(".file-name").text()
 	if( isNotEmpty() ) 
 		$("form").append(`<input type="hidden" name="id" value="${vo.id}">`)
 				 .append(`<input type="hidden" name="_method" value="put">`)
 				 .append(`<input type="hidden" name="pageNo" value="${page.pageNo}">`)
 				 .append(`<input type="hidden" name="search" value="${page.search}">`)
 				 .append(`<input type="hidden" name="keyword" value="${page.keyword}">`)
+				 .append(`<input type="hidden" name="filename" value="\${filename}">`)
 				 .submit()	
 })
 

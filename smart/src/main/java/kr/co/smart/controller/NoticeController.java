@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,11 +28,60 @@ public class NoticeController {
 
 	//조회:Get, 등록:Post, 수정:Put, 삭제:Delete
 	
+	//공지글 삭제처리 요청
+	@DeleteMapping("/delete")
+	public String delete(int id, PageVO page, HttpServletRequest request) throws Exception{
+		String filepath = mapper.getOneNotice(id).getFilepath();
+		//해당 공지글정보를 DB에서 삭제 -> 응답화면: 목록
+		if( mapper.deleteNotice(id)==1 ) {
+			common.fileDelete(filepath, request);
+		}
+		
+		StringBuffer redirect = new StringBuffer("redirect:list");
+		redirect.append("?pageNo=").append( page.getPageNo() )
+				.append("&search=").append( page.getSearch() )
+				.append("&keyword=").append( URLEncoder.encode(page.getKeyword(), "utf-8") )
+				;
+		return redirect.toString();
+	}
+	
+	
+	
 	//공지글 수정저장처리 요청
 	@PutMapping("/modify")
-	public String modify(NoticeVO vo, PageVO page) throws Exception {
+	public String modify(NoticeVO vo, PageVO page
+						, MultipartFile file, HttpServletRequest request) throws Exception {
+		
+		//원래 공지글정보 조회해오기
+		NoticeVO notice = mapper.getOneNotice(vo.getId());
+		
+		//첨부파일이 없는 경우
+		if( file.isEmpty() ) {
+			//원래X -> 그대로 -> 처리X
+			//원래O -> 그대로: 화면에 파일명O -> DB정보로 수정정보에 담기
+			//원래O -> 파일삭제: 화면에 파일명X -> 물리적파일 삭제
+			if( !vo.getFilename().isEmpty() ) {
+				vo.setFilepath(notice.getFilepath() );
+			}
+			
+		}else {
+		//첨부파일이 있는 경우
+			//원래X -> 새로첨부 -> DB에 저장되도록 수정정보에 담기
+			//원래O -> 바꿔첨부 -> DB에 저장되도록 수정정보에 담기 + 원래 첨부된 물리적파일 삭제
+			vo.setFilename(file.getOriginalFilename());
+			vo.setFilepath( common.fileUpload("notice", file, request));
+		}
+		
 		//화면에서 입력한 정보로 DB에 변경저장
-		mapper.updateNotice(vo);
+		if( mapper.updateNotice(vo)==1 ) {
+			//원래O -> 파일삭제: 화면에 파일명X -> 물리적파일 삭제
+			//원래O -> 바꿔첨부:  원래 첨부된 물리적파일 삭제
+			if( notice.getFilename() != null ) {
+				if( vo.getFilename().isEmpty() || !file.isEmpty() ) {
+					common.fileDelete( notice.getFilepath(), request);
+				}
+			}
+		}
 		//응답화면연결 : 정보화면
 		StringBuffer redirect = new StringBuffer("redirect:info");
 		redirect.append("?id=").append( vo.getId() )
@@ -65,8 +115,8 @@ public class NoticeController {
 		common.fileDownload(vo.getFilepath(), vo.getFilename(), request, response);
 	}
 	
-	//공지글 정보화면 요청
-	@RequestMapping("/info")
+	//공지글 원글/답글 정보화면 요청
+	@RequestMapping( {"/info", "/reply/info"} )
 	public String info(int id, PageVO page, Model model, HttpServletRequest request) {
 		mapper.updateReadCount(id); 	//조회수처리
 		//해당 공지글정보를 DB에서 조회해오기 -> 정보화면에 출력할 수 있도록 Model객체에 담기
@@ -82,6 +132,24 @@ public class NoticeController {
 	}
 	
 	
+	//답글 저장처리 요청
+	@PostMapping("/reply/register")
+	public String reply(NoticeVO vo) {
+		//화면에서 입력한 정보로 DB에 답글저장 처리 -> 응답화면:목록
+		mapper.registerReply(vo);
+		
+		return "redirect:/notice/list";
+	}
+	
+	
+	//답글쓰기 화면 요청
+	@RequestMapping("/reply/register")
+	public String reply(int id, Model model) {
+		//원글정보를 조회해와 답글등록화면에 출력
+		model.addAttribute("vo", mapper.getOneNotice(id));
+		model.addAttribute("crlf", "\r\n");
+		return "notice/reply";
+	}
 	
 	
 	//공지글 저장처리 요청

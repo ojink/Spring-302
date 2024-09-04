@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h3 class="my-4">공지글 정보</h3>
+<h3 class="my-4">${vo.step==0? "공지글": "답글"}  정보</h3>
 
 <table class="table tb-row">
 <colgroup>
@@ -63,6 +63,11 @@
 	<button class="btn btn-primary" id="btn-delete">정보삭제</button>
 	</c:if>
 	
+	<!-- 로그인한 경우 답글쓰기 가능 -->
+	<c:if test="${!empty loginInfo }">
+	<button class="btn btn-primary" id="btn-reply">답글쓰기</button>
+	</c:if>
+	
 </div>
 
 <script>
@@ -70,9 +75,27 @@ $(".file-download").on("click", function(){
 	location = "<c:url value='/notice/download?id=${vo.id}'/>"
 })
 
-$("#btn-list, #btn-modify").on("click", function(){
-	var id = $(this).attr("id") //btn-list, btn-modify
-	id = id.substr( id.indexOf("-")+1 ) // list, modify
+$("#btn-delete").on("click", function(){
+	if( confirm("정말 삭제하시겠습니까?") ){
+		$("<form method='post' action='delete'></form>")
+		 .appendTo("body")
+		 .append(`<input type="hidden" name="id" value="${vo.id}">`)
+		 .append(`<input type="hidden" name="_method" value="delete">`)
+		 .append(`<input type="hidden" name="pageNo" value="${page.pageNo}">`)
+		 .append(`<input type="hidden" name="search" value="${page.search}">`)
+		 .append(`<input type="hidden" name="keyword" value="${page.keyword}">`)
+		 .submit()
+		
+	}
+})
+
+$("#btn-list, #btn-modify, #btn-reply").on("click", function(){
+	var id = $(this).attr("id") //btn-list, btn-modify, btn-reply
+	id = id.substr( id.indexOf("-")+1 ) // list, modify, reply/register
+	
+	if( id=="reply" ){
+		id = `<c:url value="/notice/reply/register"/>`
+	}
 	
 	location = id
 			+ "?id=${vo.id}&pageNo=${page.pageNo}&search=${page.search}&keyword=${page.keyword}"

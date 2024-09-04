@@ -2,6 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.notice.NoticeMapper">
 
+<!-- 공지글 삭제 -->
+<delete id="deleteNotice">
+delete from notice where id = #{id}
+</delete>
+
 <!-- 공지글 변경저장 -->
 <update id="updateNotice">
 update notice set title = #{title}, content = #{content}
@@ -21,6 +26,13 @@ where id = #{id}
 select name, n.* from notice n left outer join member m on m.userid = n.writer  
 where id = #{id}
 </select>
+
+<!-- 답글 신규저장 -->
+<insert id="registerReply">
+insert into notice ( title, content, writer, filename, filepath, rid, root, step, indent)
+values ( #{title}, #{content}, #{writer}, #{filename, jdbcType=VARCHAR}
+		, #{filepath, jdbcType=VARCHAR}, #{rid}, #{root}, #{step}+1, #{indent}+1 )
+</insert>
 
 <!-- 공지글 신규저장 -->
 <insert id="registerNotice">
@@ -52,7 +64,7 @@ select count(*) from notice <include refid="whereSearch"/>
 <!-- 공지글목록조회 -->
 <select id="getListOfNotice" resultType="notice">
 select * 
-from (select row_number() over(order by id) no, name, n.* 
+from (select row_number() over(order by root, step desc) no, name, n.* 
 	  from notice n left outer join member m on m.userid = n.writer 
 	  <include refid="whereSearch"/>) n 
 where no between #{beginList} and #{endList}
