@@ -74,12 +74,15 @@ $("#btn-save").on("click", function(){
 				 .append(`<input type="hidden" name="root" value="${vo.root}">`)
 				 .append(`<input type="hidden" name="step" value="${vo.step}">`)
 				 .append(`<input type="hidden" name="indent" value="${vo.indent}">`)
+				 .append(`<input type="hidden" name="pageNo" value="${page.pageNo}">`)
+				 .append(`<input type="hidden" name="search" value="${page.search}">`)
+				 .append(`<input type="hidden" name="keyword" value="${page.keyword}">`)
 				 .submit()	
 })
 
 $("#btn-cancel").on("click", function(){
 	location = "<c:url value='/notice/info'/>"
-			+"?id=${vo.id}"
+		+ "?id=${vo.id}&pageNo=${page.pageNo}&search=${page.search}&keyword=${page.keyword}"
 })
 
 </script>

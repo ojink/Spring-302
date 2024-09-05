@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h3 class="my-4">공지글 수정</h3>
+<h3 class="my-4">${vo.indent==0? '공지글' : '답글'} 수정</h3>
 <form method="post" action="modify" enctype="multipart/form-data">
 <table class="table tb-row">
 <colgroup>

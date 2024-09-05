@@ -95,6 +95,8 @@ $("#btn-list, #btn-modify, #btn-reply").on("click", function(){
 	
 	if( id=="reply" ){
 		id = `<c:url value="/notice/reply/register"/>`
+	}else if( id=="list" ){
+		id = `<c:url value="/notice/list"/>`
 	}
 	
 	location = id

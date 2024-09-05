@@ -29,7 +29,7 @@ public class NoticeController {
 	//조회:Get, 등록:Post, 수정:Put, 삭제:Delete
 	
 	//공지글 삭제처리 요청
-	@DeleteMapping("/delete")
+	@DeleteMapping( {"/delete", "/reply/delete"})
 	public String delete(int id, PageVO page, HttpServletRequest request) throws Exception{
 		String filepath = mapper.getOneNotice(id).getFilepath();
 		//해당 공지글정보를 DB에서 삭제 -> 응답화면: 목록
@@ -37,7 +37,7 @@ public class NoticeController {
 			common.fileDelete(filepath, request);
 		}
 		
-		StringBuffer redirect = new StringBuffer("redirect:list");
+		StringBuffer redirect = new StringBuffer("redirect:/notice/list");
 		redirect.append("?pageNo=").append( page.getPageNo() )
 				.append("&search=").append( page.getSearch() )
 				.append("&keyword=").append( URLEncoder.encode(page.getKeyword(), "utf-8") )
@@ -48,7 +48,7 @@ public class NoticeController {
 	
 	
 	//공지글 수정저장처리 요청
-	@PutMapping("/modify")
+	@PutMapping( {"/modify", "/reply/modify"})
 	public String modify(NoticeVO vo, PageVO page
 						, MultipartFile file, HttpServletRequest request) throws Exception {
 		
@@ -93,7 +93,7 @@ public class NoticeController {
 	}
 	
 	//공지글 수정화면 요청
-	@GetMapping("/modify")
+	@GetMapping( {"/modify", "/reply/modify"} )
 	public String modify(int id, PageVO page, Model model, HttpServletRequest request) {
 		//해당 공지글 정보를 DB에서 조회해와 수정화면에 출력할 수 있도록 Model객체에 담기
 		model.addAttribute("page", page);
@@ -134,18 +134,30 @@ public class NoticeController {
 	
 	//답글 저장처리 요청
 	@PostMapping("/reply/register")
-	public String reply(NoticeVO vo) {
+	public String reply(NoticeVO vo, PageVO page, MultipartFile file
+							, HttpServletRequest request) throws Exception{
+		//첨부파일 있는 경우
+		if( !file.isEmpty() ) {
+			vo.setFilename( file.getOriginalFilename() );
+			vo.setFilepath( common.fileUpload("notice", file, request));
+		}
 		//화면에서 입력한 정보로 DB에 답글저장 처리 -> 응답화면:목록
 		mapper.registerReply(vo);
 		
-		return "redirect:/notice/list";
+		StringBuffer redirect = new StringBuffer("redirect:/notice/list");
+		redirect.append("?pageNo=").append( page.getPageNo() )
+				.append("&search=").append( page.getSearch() )
+				.append("&keyword=").append( URLEncoder.encode(page.getKeyword(), "utf-8") )
+				;
+		return redirect.toString();
 	}
 	
 	
 	//답글쓰기 화면 요청
 	@RequestMapping("/reply/register")
-	public String reply(int id, Model model) {
+	public String reply(int id, Model model, PageVO page) {
 		//원글정보를 조회해와 답글등록화면에 출력
+		model.addAttribute("page", page);
 		model.addAttribute("vo", mapper.getOneNotice(id));
 		model.addAttribute("crlf", "\r\n");
 		return "notice/reply";

@@ -49,7 +49,7 @@
 	<td>${vo.no}</td>
 	<td><span style="margin-left:${15*vo.indent}px"></span>
 		<c:if test="${vo.indent>0}"><i class="fa-regular fa-comment-dots"></i></c:if>
-		<a class="text-link" href="info?id=${vo.id}&pageNo=${page.pageNo}&search=${page.search}&keyword=${page.keyword}">${vo.title }</a></td>
+		<a class="text-link" href="${vo.indent>0 ? 'reply/info' : 'info'}?id=${vo.id}&pageNo=${page.pageNo}&search=${page.search}&keyword=${page.keyword}">${vo.title }</a></td>
 	<td>${vo.name }</td>
 	<td>${vo.writedate }</td>
 	<td>${vo.readcnt }</td>
