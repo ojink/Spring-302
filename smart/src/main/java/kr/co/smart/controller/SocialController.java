@@ -26,7 +26,7 @@ public class SocialController {
 	@Value("${kakao.client-id}") private String kakaoId;
 	
 	//로그아웃 처리 요청
-	@RequestMapping("/logout")
+	//@RequestMapping("/logout")
 	public String logout(HttpSession session, HttpServletRequest request) {
 		MemberVO vo = (MemberVO)session.getAttribute("loginInfo");
 		//세션의 로그인정보를 삭제하기

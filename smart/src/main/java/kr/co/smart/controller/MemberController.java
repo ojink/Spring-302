@@ -195,7 +195,7 @@ public class MemberController {
 
 	
 	//로그인 처리 요청
-	@ResponseBody @RequestMapping("/smartLogin")
+	//@ResponseBody @RequestMapping("/smartLogin")
 	public String login(String userid, String userpw
 						, HttpServletRequest request, HttpSession session) {
 		//화면에서 입력한 아이디/비번이 일치하는 회원정보 조회하기
@@ -224,6 +224,18 @@ public class MemberController {
 		
 		return msg.toString();
 	}
+	
+	//로그인실패 처리
+	@ResponseBody @RequestMapping("/login/fail")
+	public String loginFail(HttpServletRequest request) {
+		StringBuffer msg = new StringBuffer("<script>");
+		msg.append("alert('아이디나 비밀번호가 일치하지 않습니다'); ");
+		msg.append("location='")
+				.append(common.appURL(request, "/member/login")).append("'");
+		msg.append("</script>");
+		return msg.toString();
+	}
+	
 	
 	//로그인 화면 요청
 	@RequestMapping("/login")
