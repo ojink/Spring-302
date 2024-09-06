@@ -53,7 +53,7 @@
 function resetPassword(){
 	$.ajax({
 		url: "resetPassword",
-		data: { userpw: $("[name=userpw]").val(), userid: "${loginInfo.userid}" }
+		data: { userpw: $("[name=userpw]").val() }
 	}).done(function( response ){
 		if( response ){
 			alert("비밀번호가 변경되었습니다")
@@ -69,7 +69,7 @@ $("#btn-save").on("click", function(){
 		//현재 비번이 정확인지 확인
 		$.ajax({
 			url: "correctPassword",
-			data: { userpw: $("[name=current]").val(), userid: "${loginInfo.userid}"  }
+			data: { userpw: $("[name=current]").val() }
 		}).done(function( response ){
 			//console.log( response )
 			if( response ){

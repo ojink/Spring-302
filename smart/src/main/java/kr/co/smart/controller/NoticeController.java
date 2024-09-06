@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.co.smart.auth.LoginUser;
 import kr.co.smart.common.CommonUtility;
 import kr.co.smart.common.PageVO;
 import kr.co.smart.notice.NoticeMapper;
@@ -135,7 +137,10 @@ public class NoticeController {
 	//답글 저장처리 요청
 	@PostMapping("/reply/register")
 	public String reply(NoticeVO vo, PageVO page, MultipartFile file
+							, @AuthenticationPrincipal LoginUser user
 							, HttpServletRequest request) throws Exception{
+		vo.setWriter( user.getUsername() ); //인증된 사용자 아이디 를 글쓴이의 아이디로 담기 
+		
 		//첨부파일 있는 경우
 		if( !file.isEmpty() ) {
 			vo.setFilename( file.getOriginalFilename() );
@@ -166,7 +171,10 @@ public class NoticeController {
 	
 	//공지글 저장처리 요청
 	@PostMapping("/register")
-	public String register(NoticeVO vo, MultipartFile file, HttpServletRequest request) {
+	public String register(@AuthenticationPrincipal LoginUser user
+							, NoticeVO vo, MultipartFile file, HttpServletRequest request) {
+		vo.setWriter( user.getUsername() ); //인증된 사용자 아이디 를 글쓴이의 아이디로 담기 
+		
 		//첨부파일 있는 경우
 		if( !file.isEmpty() ) {
 			vo.setFilename( file.getOriginalFilename() );

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -56,17 +57,18 @@
 
 <div class="btn-toolbar justify-content-center gap-2">
 	<button class="btn btn-primary" id="btn-list">목록으로</button>
-	
+
+	<sec:authorize access="isAuthenticated()"> <!-- 인증(로그인)된 경우 -->
+		<sec:authentication property="principal.user" var="auth"/>
 	<!-- 로그인한 사용자가 쓴 글에 대해서만 수정/삭제 가능 -->
-	<c:if test="${loginInfo.userid == vo.writer}">
+	<c:if test="${auth.userid == vo.writer}">
 	<button class="btn btn-primary" id="btn-modify">정보수정</button>
 	<button class="btn btn-primary" id="btn-delete">정보삭제</button>
 	</c:if>
 	
 	<!-- 로그인한 경우 답글쓰기 가능 -->
-	<c:if test="${!empty loginInfo }">
 	<button class="btn btn-primary" id="btn-reply">답글쓰기</button>
-	</c:if>
+	</sec:authorize>
 	
 </div>
 

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <c:choose>
 	<c:when test="${category eq 'cu'}"> <c:set var="title" value="- 고객관리"/>  </c:when>
@@ -68,19 +69,22 @@
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                            	<sec:authorize access="isAuthenticated()">
+                            		<sec:authentication property="principal.user" var="auth"/>
+                            	</sec:authorize>
                             
-                            	<c:if test="${empty loginInfo}">
+                            	<c:if test="${empty auth}">
                                 <li class="nav-item"><a class="nav-link" href="<c:url value='/member/login'/>">로그인</a></li>
                                 <li class="nav-item"><a class="nav-link" href="<c:url value='/member/join'/>">회원가입</a></li>
                             	</c:if>
 
-                            	<c:if test="${not empty loginInfo}">
+                            	<c:if test="${not empty auth}">
                             	
                             	<li class="nav-item">
                             		<div class="profile px40">
                             		<c:choose>
-                            			<c:when test="${empty loginInfo.profile}"><i class="font-profile fa-solid fa-circle-user"></i></c:when>
-                            			<c:otherwise><img src="${loginInfo.profile}"></c:otherwise>
+                            			<c:when test="${empty auth.profile}"><i class="font-profile fa-solid fa-circle-user"></i></c:when>
+                            			<c:otherwise><img src="${auth.profile}"></c:otherwise>
                             		</c:choose>
                             		</div>
                             	</li>
@@ -88,10 +92,10 @@
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" 
 	                                    	data-bs-toggle="dropdown" aria-haspopup="true" 
-	                                    	aria-expanded="false">${loginInfo.name }</a>
+	                                    	aria-expanded="false">${auth.name }</a>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    	<c:if test="${empty loginInfo.social }">
-                                        <a class="dropdown-item" href="#!">아이디: ${loginInfo.userid}</a>
+                                    	<c:if test="${empty auth.social }">
+                                        <a class="dropdown-item" href="#!">아이디: ${auth.userid}</a>
                                         <a class="dropdown-item" href="<c:url value='/member/user/myPage'/>">My Page</a>
                                         <a class="dropdown-item" href="<c:url value='/member/user/changePassword'/>">비밀번호 변경</a>
                                         <div class="dropdown-divider"></div>

@@ -69,8 +69,7 @@
 
 $("#btn-save").on("click", function(){
 	if( isNotEmpty() ) 
-		$("form").append(`<input type="hidden" name="writer" value="${loginInfo.userid}">`)
-				 .append(`<input type="hidden" name="rid" value="${vo.id}">`)
+		$("form").append(`<input type="hidden" name="rid" value="${vo.id}">`)
 				 .append(`<input type="hidden" name="root" value="${vo.root}">`)
 				 .append(`<input type="hidden" name="step" value="${vo.step}">`)
 				 .append(`<input type="hidden" name="indent" value="${vo.indent}">`)
