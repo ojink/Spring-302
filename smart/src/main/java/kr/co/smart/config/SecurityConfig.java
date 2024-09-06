@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import kr.co.smart.auth.AccessDeny;
 import kr.co.smart.auth.LoginSuccess;
 import kr.co.smart.auth.LogoutSuccess;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +30,19 @@ public class SecurityConfig {
 		//공지글, FAQ 등록 : 관리자 권한 필요
 		//답글,방명록 등록, 사용자관련 : 사용자 권한 필요
 		//조회(목록,정보) :  모든 접근 허용
+		//수정/삭제 : 해당 글을 쓴 사용자만 접근 허용
 		http.authorizeRequests()
 			//.antMatchers("/**").permitAll() //모든 요청에 대한 접근 허용
 			.antMatchers("/customer/**", "/hr/**").permitAll()
 			.antMatchers("/**/list", "/**/info").permitAll()
 			.antMatchers("/notice/register").hasAuthority("ADMIN")
 			.antMatchers("/**/register", "/**/user/**").hasAuthority("USER")
+			.antMatchers("/**/modify", "/**/delete").access("@accessUser.is(authentication, request)")
 		
+			//접근불가시 처리
+			.and()
+			.exceptionHandling().accessDeniedHandler(accessDeny)
+			
 			//스프링시큐리티 로그인 적용하기
 			.and()
 			.formLogin()
@@ -58,5 +65,6 @@ public class SecurityConfig {
 
 	private final LoginSuccess loginSuccess;
 	private final LogoutSuccess logoutSuccess;
+	private final AccessDeny accessDeny;
 	
 }
