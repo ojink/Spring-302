@@ -31,14 +31,12 @@
 							<input class="form-control" name="userpw" type="password"
 								placeholder="비밀번호"> <label>비밀번호</label>
 						</div>
-						<!--  
-						<div class="form-check mb-3">
-							<input class="form-check-input" id="inputRememberPassword"
-								type="checkbox" value=""> <label
-								class="form-check-label" for="inputRememberPassword">Remember
-								Password</label>
+						<div class="form-check mb-4">
+							<label>
+								<input class="form-check-input" name="remember-me"
+									type="checkbox" >로그인 상태 유지
+							</label>
 						</div>
-						-->
 						<button class="btn btn-primary form-control py-3">로그인</button>
 						
 					</form>

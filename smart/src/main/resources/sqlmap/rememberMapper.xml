@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.smart.remember.RememberMapper">
+
+<insert id="registerRemember">
+insert into remember (username, series, token, last_used)
+values (#{username}, #{series}, #{token}, #{last_used}) 
+</insert>
+
+<delete id="deleteRemember">
+delete from remember where series = #{series}
+</delete>
+
+<update id="updateRemember">
+update remember set token = #{token}, last_used = #{last_used}
+where series = #{series} 
+</update>
+
+<select id="getOneRemember">
+select * from remember where series = #{series}
+</select>
+
+
+</mapper>

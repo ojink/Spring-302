@@ -1,5 +1,6 @@
 package kr.co.smart.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,7 +10,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import kr.co.smart.auth.AccessDeny;
 import kr.co.smart.auth.LoginSuccess;
+import kr.co.smart.auth.LoginUserService;
 import kr.co.smart.auth.LogoutSuccess;
+import kr.co.smart.auth.RememberService;
+import kr.co.smart.remember.RememberMapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -58,13 +62,30 @@ public class SecurityConfig {
 				.logoutUrl("/member/logout")
 				.invalidateHttpSession(true)
 				.logoutSuccessHandler(logoutSuccess)
+				
+			
+			.and()
+			.rememberMe()
+				.key( rememberKey )
+				.tokenValiditySeconds(60*60*24*30)
+				.rememberMeServices( rememberMe() )
+				
 			;
 		http.csrf().disable();  //사이트간 요청 위조 방지 처리- 비활성화
 		return http.build();
 	}
 
+	
+	@Bean
+	RememberService rememberMe() {
+		return new RememberService(rememberKey, userService, mapper);
+	}
+	
+	private final RememberMapper mapper;
+	private final LoginUserService userService;
 	private final LoginSuccess loginSuccess;
 	private final LogoutSuccess logoutSuccess;
 	private final AccessDeny accessDeny;
 	
+	@Value("${rememberKey}") private String rememberKey; 
 }
