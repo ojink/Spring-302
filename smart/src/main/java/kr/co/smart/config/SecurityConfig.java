@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 
 import kr.co.smart.auth.AccessDeny;
@@ -13,6 +16,7 @@ import kr.co.smart.auth.LoginSuccess;
 import kr.co.smart.auth.LoginUserService;
 import kr.co.smart.auth.LogoutSuccess;
 import kr.co.smart.auth.RememberService;
+import kr.co.smart.auth.SocialUserService;
 import kr.co.smart.remember.RememberMapper;
 import lombok.RequiredArgsConstructor;
 
@@ -70,6 +74,13 @@ public class SecurityConfig {
 				.tokenValiditySeconds(60*60*24*30)
 				.rememberMeServices( rememberMe() )
 				
+			.and()
+			.oauth2Login()
+				.successHandler(loginSuccess)
+				.loginPage( "/member/login" )
+				.userInfoEndpoint() //로그인성공 후 사용자정보 가져오기위한 설정
+				.userService( socialService )
+			
 			;
 		http.csrf().disable();  //사이트간 요청 위조 방지 처리- 비활성화
 		return http.build();
@@ -81,6 +92,7 @@ public class SecurityConfig {
 		return new RememberService(rememberKey, userService, mapper);
 	}
 	
+	private final SocialUserService socialService;
 	private final RememberMapper mapper;
 	private final LoginUserService userService;
 	private final LoginSuccess loginSuccess;

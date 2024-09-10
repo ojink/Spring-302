@@ -88,14 +88,14 @@ public class SocialController {
 			String id = json.get("id").toString();
 			//id 를 제외한 사용자 정보가 kakao_account 에 있다
 			json = json.getJSONObject("kakao_account");
-			String email = hasKey(json, "email");	
-			String gender = hasKey(json, "gender", "female").equals("female") ? "여" : "남" ; //female/male -> 여/남
-			String name = hasKey(json, "name");
-			String phone = hasKey(json, "phone_number");
+			String email = common.hasKey(json, "email");	
+			String gender = common.hasKey(json, "gender", "female").equals("female") ? "여" : "남" ; //female/male -> 여/남
+			String name = common.hasKey(json, "name");
+			String phone = common.hasKey(json, "phone_number");
 			
 			json = json.getJSONObject("profile");
-			String profile = hasKey(json, "profile_image_url");
-			if( name.isEmpty() ) name = hasKey(json, "nickname", "무명씨");
+			String profile = common.hasKey(json, "profile_image_url");
+			if( name.isEmpty() ) name = common.hasKey(json, "nickname", "무명씨");
 			
 			//카카오 프로필정보를 사용자정보로 관리하도록 MemberVO에 저장하기
 			MemberVO vo = new MemberVO();
@@ -117,15 +117,6 @@ public class SocialController {
 		}
 		
 		return "redirect:/";   // 카카오로그인 성공시 웰컴화면으로 연결
-	}
-	
-	//카의 존재유무에 따라 데이터처리하기
-	private String hasKey(JSONObject json, String key) {
-		return json.has(key) ? json.getString(key) : "";
-	}
-	//기본값을 지정해야 하는 경우
-	private String hasKey(JSONObject json, String key, String defaultValue) {
-		return json.has(key) ? json.getString(key) : defaultValue;
 	}
 	
 	
@@ -180,13 +171,13 @@ public class SocialController {
 		if( json.getString("resultcode").equals("00") ) {
 			json = json.getJSONObject("response");
 			String id = json.getString("id"); //네이버 아이디마다 고유하게 발급되는 값
-			String email = hasKey(json, "email");
-			String name = hasKey(json, "nickname");
-			String profile = hasKey(json, "profile_image");
+			String email = common.hasKey(json, "email");
+			String name = common.hasKey(json, "nickname");
+			String profile = common.hasKey(json, "profile_image");
 			// - F: 여성, M: 남성, U: 확인불가 -> F:여, 나머지:남
-			String gender = hasKey(json, "gender", "M").equals("F") ? "여" : "남" ;
-			String phone =  hasKey(json, "mobile");
-			if( name.isEmpty() ) name = hasKey(json, "name", "익명씨");
+			String gender = common.hasKey(json, "gender", "M").equals("F") ? "여" : "남" ;
+			String phone =  common.hasKey(json, "mobile");
+			if( name.isEmpty() ) name = common.hasKey(json, "name", "익명씨");
 			
 			//네이버 프로필정보를 사용자정보로 관리하도록 MemberVO에 담기
 			MemberVO vo = new MemberVO();

@@ -30,9 +30,11 @@ public class MemberController {
 
 	@Value("${smart.files}") private String filesPath; 
 	
+	//Principal : 접근주체인 UserDetails(LoginUser)
 	//내정보 변경저장 처리 요청
 	@PutMapping("/user/myPage/modify")
 	public String myPage( MemberVO vo, boolean img, MultipartFile file
+						, @AuthenticationPrincipal LoginUser principal
 						,  HttpSession session, HttpServletRequest request) {
 		//원래 프로필정보를 조회해오기
 		MemberVO user = mapper.getOneMember(vo.getUserid());
@@ -64,7 +66,8 @@ public class MemberController {
 					common.fileDelete( user.getProfile(), request );
 				}
 			}
-			session.setAttribute("loginInfo", vo);
+			principal.setUser(vo);
+			
 		}
 		return "redirect:/";
 	}

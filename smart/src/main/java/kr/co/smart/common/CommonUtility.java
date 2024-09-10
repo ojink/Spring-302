@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -34,6 +35,15 @@ public class CommonUtility {
 	@Value("${spring.mail.username}") private String emailUser;
 	@Value("${spring.mail.password}") private String emailPass;
 	@Value("${smart.upload}")  private String uploadPath;  // d://smart/app/upload/
+	
+	//키의 존재유무에 따라 데이터처리하기
+	public String hasKey(JSONObject json, String key) {
+		return json.has(key) ? json.getString(key) : "";
+	}
+	//기본값을 지정해야 하는 경우
+	public String hasKey(JSONObject json, String key, String defaultValue) {
+		return json.has(key) ? json.getString(key) : defaultValue;
+	}
 	
 	
 	//첨부된 파일 삭제하기-물리적삭제

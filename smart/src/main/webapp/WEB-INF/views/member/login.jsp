@@ -34,7 +34,7 @@
 						<div class="form-check mb-4">
 							<label>
 								<input class="form-check-input" name="remember-me"
-									type="checkbox" >로그인 상태 유지
+									type="checkbox" checked >로그인 상태 유지
 							</label>
 						</div>
 						<button class="btn btn-primary form-control py-3">로그인</button>
@@ -60,7 +60,12 @@
 
 <script>
 $("#naver, #kakao").on("click", function(){
-	location = $(this).attr("id") + "Login"
+	// http://localhost:8080/smart/member/naverLogin
+	//location = $(this).attr("id") + "Login"
+	
+// 	http://localhost:8080/smart/oauth2/authorization/naver
+// 	http://localhost:8080/smart/oauth2/authorization/kakao
+	location = "<c:url value='/oauth2/authorization/' />" + $(this).attr("id")
 })
 </script>
 </html>

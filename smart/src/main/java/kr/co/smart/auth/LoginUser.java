@@ -2,18 +2,23 @@ package kr.co.smart.auth;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import kr.co.smart.member.MemberVO;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-@RequiredArgsConstructor @Getter
-public class LoginUser implements UserDetails{
-	private final MemberVO user;
+@AllArgsConstructor @Getter @Setter
+public class LoginUser implements UserDetails, OAuth2User{
+	private static final long serialVersionUID = 1L;
+	
+	private MemberVO user;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -54,6 +59,16 @@ public class LoginUser implements UserDetails{
 	@Override
 	public boolean isEnabled() { //유효한 패스워드인지
 		return true;
+	}
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return null;
 	}
 
 }

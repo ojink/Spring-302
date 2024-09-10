@@ -26,6 +26,8 @@ public class RememberService extends AbstractRememberMeServices{
 		super(key, userService);
 		this.mapper = mapper;
 		random = new SecureRandom();
+		//쿠키명 remember-me 변경
+		super.setCookieName(key);
 	}
 
 	private String generateToken() {
@@ -34,6 +36,19 @@ public class RememberService extends AbstractRememberMeServices{
 		return new String( Base64.getEncoder().encode(token) );
 	}
 	
+	
+	@Override
+	public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+		//로그인유지 해제 + DB 정보 삭제
+		String cookie = super.extractRememberMeCookie(request);
+		if( cookie != null ) {
+			String tokens[] = super.decodeCookie(cookie);
+			mapper.deleteRemember( tokens[0] );
+		}
+		
+		super.logout(request, response, authentication); //쿠키삭제 
+	}
+
 	@Override
 	protected void onLoginSuccess(HttpServletRequest request, HttpServletResponse response,
 									Authentication auth) {
@@ -87,7 +102,7 @@ public class RememberService extends AbstractRememberMeServices{
 		mapper.updateRemember(vo);
 		
 		String[] cookie = { series, vo.getToken() };
-		super.setCookie(cookieTokens, getTokenValiditySeconds(), request, response);
+		super.setCookie(cookie, getTokenValiditySeconds(), request, response);
 		
 		//반환할 정보는 UserDetails(LoginUser)
 		LoginUser user = (LoginUser)super.getUserDetailsService().loadUserByUsername( vo.getUsername() );
