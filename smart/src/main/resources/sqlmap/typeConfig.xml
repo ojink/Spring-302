@@ -9,5 +9,7 @@
 		<typeAlias type="kr.co.smart.member.MemberVO" alias="member" />
 		<typeAlias type="kr.co.smart.notice.NoticeVO" alias="notice" />
 		<typeAlias type="kr.co.smart.remember.RememberVO" alias="remember" />
+		<typeAlias type="kr.co.smart.board.BoardVO" alias="board" />
+		<typeAlias type="kr.co.smart.common.FileVO" alias="file" />
 	</typeAliases>
 </configuration>
