@@ -21,17 +21,15 @@
 	<td><textarea name="content" title="내용" class="check-empty form-control"></textarea></td>
 </tr>
 <tr><th>첨부파일</th>
-	<td><div class="row">
-			<div class="d-flex align-items-center gap-3 file-info">
-				<label>
-					<a class="btn btn-outline-primary">파일선택</a>
-					<input type="file" name="file" 
-						class="d-none form-control file-single">
-				</label>
-				<span class="file-name"></span>
-				<i role="button" 
-					class="fs-3 fa-solid fa-xmark text-danger file-remove d-none"></i>
-			</div>
+	<td>
+		<label>
+			<a class="btn btn-outline-primary">파일선택</a>
+			<input type="file" name="files" multiple 
+					class="d-none form-control file-multiple">
+		</label>
+		<!-- 드래그드랍으로 파일첨부할 영역 -->
+		<div class="form-control file-drag mt-2 py-3">
+			<div class="py-1 text-center">첨부할 파일을 마우스로 끌어 오세요</div>
 		</div>
 	</td>
 </tr>
@@ -46,7 +44,8 @@
 <script>
 
 $("#btn-save").on("click", function(){
-	if( isNotEmpty() ) 
+	if( isNotEmpty() )
+		Files.transfer()
 		$("form").submit()	
 })
 

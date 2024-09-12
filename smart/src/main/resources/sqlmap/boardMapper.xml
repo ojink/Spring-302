@@ -5,8 +5,22 @@
 
 <!-- 방명록 등록 -->
 <insert id="registerBoard">
-insert into board (title, content, writer)
-values ( #{title}, #{content}, #{writer} )
+{
+	call declare 
+	begin
+	
+	insert into board (title, content, writer)
+	values ( #{title}, #{content}, #{writer} );
+	
+	<if test="fileList != null">
+	<foreach collection="fileList" item="file">
+	insert into board_file(filename, filepath, board_id)
+	values ( #{file.filename}, #{file.filepath}, seq_board.currval);
+	</foreach>
+	</if>
+
+	end
+}
 </insert>
 
 <sql id="whereSearch">
@@ -40,10 +54,10 @@ select count(*) from board <include refid="whereSearch"/>
 
 <!-- 방명록 페이지 목록 조회 -->
 <select id="getListOfBoard" resultType="board">
-select * 
+select (select count(*) from board_file where board_id = b.id) filecnt, b.* 
 from (  select row_number() over(order by id) no, name, b.* 
   		from board b inner join member on writer = userid
-  		<include refid="whereSearch" /> )
+  		<include refid="whereSearch" /> ) b
 where no between #{beginList} and #{endList}
 order by id desc
 

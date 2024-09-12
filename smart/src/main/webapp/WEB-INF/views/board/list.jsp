@@ -61,7 +61,11 @@
 <c:forEach items="${page.list}" var="vo">
 <tr>
 	<td>${vo.no}</td>
-	<td><a class="text-link" href="">${vo.title }</a></td>
+	<td><a class="text-link" href="">${vo.title }</a>
+		<c:if test="${vo.filecnt > 0}">
+		<i class="fa-solid fa-paperclip"></i>
+		</c:if>
+	</td>
 	<td>${vo.name }</td>
 	<td>${vo.writedate }</td>
 	<td>${vo.readcnt }</td>

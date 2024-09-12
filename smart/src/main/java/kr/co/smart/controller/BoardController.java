@@ -1,5 +1,6 @@
 package kr.co.smart.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
@@ -8,9 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.smart.board.BoardMapper;
 import kr.co.smart.board.BoardVO;
+import kr.co.smart.common.CommonUtility;
 import kr.co.smart.common.PageVO;
 import lombok.RequiredArgsConstructor;
 
@@ -18,13 +21,17 @@ import lombok.RequiredArgsConstructor;
 @Controller @RequestMapping("/board")
 public class BoardController {
 	private final BoardMapper mapper;
-
+	private final CommonUtility common;
 	
 	//방명록 등록 저장처리 요청
 	@PostMapping("/register")
-	public String register(BoardVO vo, Authentication auth) {
+	public String register(BoardVO vo, MultipartFile[] files
+							, Authentication auth
+							, HttpServletRequest request) {
 		//화면에서 입력한 정보로 DB에 신규저장 후 목록화면으로 연결
 		vo.setWriter(auth.getName());
+		vo.setFileList( common.fileUpload("board", files, request));
+		
 		mapper.registerBoard(vo);
 		
 		return "redirect:list";

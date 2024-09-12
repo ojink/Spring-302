@@ -84,8 +84,111 @@ $(function() {
 	//------------------------------------
 	
 
+	$("body").on("dragover drop", function(e){
+		e.preventDefault(); //파일에 대한 링크열기 와 같은 기본 동작 취소
+	})
+	$(".file-drag")
+	.on("dragover", function(){
+		$(this).addClass("drag-over");
+	}).on("dragleave drop", function(){
+		$(this).removeClass("drag-over");
+	}).on("drop", function(e){
+		//console.log( e.originalEvent.dataTransfer.files )
+		//디렉토리를 걸러내고 파일만 배열로 만들기
+		var files = [];
+		var isDirectory = false; 
+		for(var item of e.originalEvent.dataTransfer.items){
+			//console.log( item.webkitGetAsEntry() )
+			if( item.webkitGetAsEntry().isFile ){
+				files.push( item.getAsFile() )
+			}else
+				isDirectory = true;
+		}
+		
+		if( isDirectory )
+			alert("폴더는 첨부할 수 없습니다!!")
+			
+		Files.setter( files )
+		//Files.setter( Object.values(e.originalEvent.dataTransfer.files) )
+		console.log( 'drop> ', Files.files )
+	})
+	
+	
+	$(".file-multiple").on("change", function(){
+		Files.setter( Object.values(this.files) )
+		console.log( 'multiple> ', Files.files )
+	})
 	
 }); //end of $(function(){})
+
+
+var Files = {
+	files : [],
+	
+	setter: function( files ){
+		var filtered = this.filter( files );
+		if( filtered.overSize ){
+			alert("10Mb 이상의 파일은 첨부할 수 없습니다");
+		}
+		this.files.push( ...filtered.files ); //배열에 배열의 요소를 추가 - spread operator
+		this.viewer( filtered.files );
+	},
+	
+	filter: function( files ){
+		var overSize = false;
+		files = files.filter( function(file){
+			if( file.size >= 1024*1024*1 ) overSize = true;
+			return file.size < 1024*1024*1; 
+		})
+		return { overSize: overSize, files: files };
+//		return files.filter( function(file){
+//			return file.size < 1024*1024*1; 
+//		})
+	},
+	
+	transfer: function(){
+		var transfer = new DataTransfer();
+		for(var file of this.files ){
+			transfer.items.add( file )
+		}
+		$(".file-multiple").prop("files", transfer.files)
+		console.log( $(".file-multiple").val() )
+	},
+	
+	remover: function( tag ){
+		var idx = tag.index()
+		this.files.splice( idx, 1 )
+		tag.remove();
+		
+		//모든 파일을 삭제시 초기화면에 형태로
+		if( $(".file-drag .file-item").length==0 ){
+			$(".file-drag").html( `<div class="py-1 text-center">첨부할 파일을 마우스로 끌어 오세요</div>` )
+		}
+	},
+	
+	viewer: function( files ){
+		var tag = "";
+		//console.log( 'length>', files.length )
+		
+		for(var file of files){
+			tag += `
+				<div class="file-item d-flex gap-3 my-1">
+					<a role="button" class="file-remove btn-close"></a>
+					<span>${file.name}</span>
+				</div>
+				`
+		}
+		
+		if( files.length==0 && $(".file-drag .file-item").length==0 )
+			$(".file-drag").html( `<div class="py-1 text-center">첨부할 파일을 마우스로 끌어 오세요</div>`  );	
+		else if( $(".file-drag .file-item").length==0 )
+			$(".file-drag").html( tag )
+		else
+			$(".file-drag").append( tag )
+	}
+	
+}
+
 
 var singleFile = ""; //파일정보를 담을 변수
 
@@ -122,6 +225,10 @@ $(document)
 	//파일삭제 클릭시 선택한 파일정보 삭제
 	singleFile = "";
 	setFileInfo( $(this) )
+})
+.on("click", ".file-drag .file-remove", function(){
+	Files.remover( $(this).closest(".file-item") )
+	console.log("remove> ", Files.files )
 })
 
 

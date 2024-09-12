@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -82,7 +83,23 @@ public class CommonUtility {
 		FileCopyUtils.copy( new FileInputStream(filepath), response.getOutputStream());
 	}
 	
-	//파일 업로드
+	//다중 파일 업로드
+	public ArrayList<FileVO> fileUpload(String category, MultipartFile[] files
+							, HttpServletRequest request) {
+		
+		ArrayList<FileVO> list = null;
+		for( MultipartFile file : files ) {
+			if( file.isEmpty() ) continue;
+			if(list == null) list = new ArrayList<FileVO>();
+			FileVO vo = new FileVO();
+			vo.setFilename( file.getOriginalFilename() );
+			vo.setFilepath( fileUpload(category, file, request) );
+			list.add(vo);
+		}
+		return list;
+	}
+	
+	//단일 파일 업로드
 	public String fileUpload(String category, MultipartFile file
 							, HttpServletRequest request) {
 		// d://smart/app/upload/ profile /2024/08/27
