@@ -50,12 +50,22 @@ end;
 /
 
 
+insert into board (title, content, writer)
+select title, content, writer from board;
+commit;
+
+select * 
+from (  select row_number() over(order by id) no, name, b.* 
+  		from board b inner join member on writer = userid )
+--where no between #{beginList} and #{endList}
+order by id desc
+;
 
 
 
 
 
-
+select userid, name from member;
 
 
 

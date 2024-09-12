@@ -54,7 +54,8 @@ select count(*) from board <include refid="whereSearch"/>
 
 <!-- 방명록 페이지 목록 조회 -->
 <select id="getListOfBoard" resultType="board">
-select (select count(*) from board_file where board_id = b.id) filecnt, b.* 
+<!-- select (select count(*) from board_file where board_id = b.id) filecnt, b.*  -->
+select fn_boardFileCount(b.id) filecnt, b.* 
 from (  select row_number() over(order by id) no, name, b.* 
   		from board b inner join member on writer = userid
   		<include refid="whereSearch" /> ) b
