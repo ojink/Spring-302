@@ -61,7 +61,28 @@ from (  select row_number() over(order by id) no, name, b.*
 order by id desc
 ;
 
+-- 첨부파일조회
+select * from board where id = 387;
+select * from board_file where board_id=387;
 
+select name, b.*, f.id file_id,  filename, filepath
+from board b inner join member m on writer = userid  
+left outer join board_file f on b.id = f.board_id
+where b.id = 387;
+
+
+--방명록 첨부파일 갯수 조회 함수
+create or replace function fn_boardFileCount( b_id number ) 
+return number is
+cnt  number;
+begin
+    select count(*) into cnt from board_file where board_id = b_id;    
+return cnt;
+end;
+/
+
+
+select fn_boardFileCount(387) from dual;
 
 
 
