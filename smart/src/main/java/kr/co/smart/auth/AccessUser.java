@@ -7,12 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import kr.co.smart.board.BoardMapper;
 import kr.co.smart.notice.NoticeMapper;
 import lombok.RequiredArgsConstructor;
 
 @Component @RequiredArgsConstructor
 public class AccessUser {
 	private final NoticeMapper notice;
+	private final BoardMapper board;
 	
 	//접근이 허용된 사용자인지 확인
 	public boolean is(Authentication auth, HttpServletRequest request) {
@@ -28,7 +30,7 @@ public class AccessUser {
 		if( url.contains("notice") )
 			access = auth.getName().equals( notice.getOneNotice(id).getWriter() );
 		else if( url.contains("board") )
-			access = auth.getName().equals( notice.getOneNotice(id).getWriter() );
+			access = auth.getName().equals( board.getOneBoard(id).getWriter() );
 		
 		return access;
 	}

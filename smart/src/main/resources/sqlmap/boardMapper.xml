@@ -3,6 +3,43 @@
 <mapper namespace="kr.co.smart.board.BoardMapper">
 
 
+<!-- 첨부파일정보 조회 -->
+<select id="getOneFile" resultType="file">
+select * from board_file where id = #{id}
+</select>
+
+<!-- 방명록 조회수 증가처리 -->
+<update id="updateReadCount">
+update board set readcnt = readcnt + 1 
+where id = #{id}
+</update>
+
+
+<resultMap type="board" id="boardResult">
+	<id property="id" column="id" />
+	<result property="title" column="title" />
+	<result property="content" column="content" />
+	<result property="writer" column="writer" />
+	<result property="writedate" column="writedate" />
+	<result property="readcnt" column="readcnt" />
+	<result property="name" column="name" />
+	
+	<collection property="fileList" ofType="file">
+		<id property="id" column="file_id" />
+		<result property="filename" column="filename" />
+		<result property="filepath" column="filepath" />
+	</collection>
+	
+</resultMap>
+
+<!-- 방명록 정보조회 -->
+<select id="getOneBoard" resultMap="boardResult">
+select name, b.*, f.id file_id,  filename, filepath
+from board b inner join member m on writer = userid  
+left outer join board_file f on b.id = f.board_id
+where b.id = #{id}
+</select>
+
 <!-- 방명록 등록 -->
 <insert id="registerBoard">
 {

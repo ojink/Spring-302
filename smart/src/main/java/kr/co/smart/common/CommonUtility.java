@@ -10,6 +10,8 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,6 +66,19 @@ public class CommonUtility {
 			model.addAttribute("file", new File( filepath ).exists() );
 		}
 	}
+	
+	public void fileExist( List<FileVO> files, Model model, HttpServletRequest request  ) {
+		if( files != null ) {
+			HashMap<Integer, Boolean> map = new HashMap<Integer, Boolean>(); 
+			for(FileVO f : files) {
+				String filepath = toRealFilePath(f.getFilepath(), request);
+				map.put( f.getId(), new File( filepath ).exists() );
+			}
+			model.addAttribute("files", map);
+		}
+	}
+	
+	
 	
 	//파일 다운로드
 	public void fileDownload(String filepath, String filename
