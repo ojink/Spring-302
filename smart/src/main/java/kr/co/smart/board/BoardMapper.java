@@ -14,8 +14,10 @@ public interface BoardMapper {
 	int getCountOfBoard(PageVO page); 			//방명록 총 건수조회
 	BoardVO getOneBoard(int id); 				//방명록 정보조회
 	int updateReadCount(int id);				//방명록 조회수 변경저장
-	int updateBoard(BoardVO vo);				//방명록 변경저장
+	int updateBoard(BoardVO vo, String removed);//방명록 변경저장
 	int deleteBoard(int id);					//방명록 삭제
 	
 	FileVO getOneFile(int id); 					//첨부파일정보조회
+	List<FileVO> getListOfRemovedFile(String removed);  //삭제할 파일정보 조회
+	List<FileVO> getListOfFile(int id); 		//방명록에 첨부된 파일목록 조회
 }

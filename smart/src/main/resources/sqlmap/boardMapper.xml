@@ -2,6 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.board.BoardMapper">
 
+<!-- 첨부된 파일목록 조회 -->
+<select id="getListOfFile" resultType="file">
+select * from board_file where board_id = #{id}
+</select>
+
+<!-- 방명록 삭제 -->
+<delete id="deleteBoard">
+delete from board where id = #{id}
+</delete>
+
+<!-- 삭제할 파일목록 조회 -->
+<select id="getListOfRemovedFile" resultType="file">
+select * from board_file where id in ( ${removed} )
+</select>
+
+
+<!-- 방명록 변경저장 -->
+<update id="updateBoard">
+{
+call declare 
+begin
+
+update board set title = #{vo.title}, content = #{vo.content}
+where id = #{vo.id};
+
+<if test="vo.fileList != null">
+<foreach collection="vo.fileList" item="file">
+	insert into board_file ( board_id, filename, filepath )
+	values( #{vo.id}, #{file.filename}, #{file.filepath} );
+</foreach>
+</if>
+
+<if test="removed !='' ">
+delete from board_file where id in ( ${removed} );
+</if>
+
+end
+} 
+</update>
 
 <!-- 첨부파일정보 조회 -->
 <select id="getOneFile" resultType="file">

@@ -7,9 +7,20 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script>
+function test(){
+	$("form")
+// 	.append(`<input type="hidden" name="_method" value="delete">`)
+	 .append(`<input type="hidden" name="id" value="384">`)
+	 .append(`<input type="hidden" name="pageNo" value="${page.pageNo}">`)
+	 .attr("action", "test")
+	 .submit();
+}
+</script>
 </head>
 <body>
 <h3 class="my-4">방명록 목록</h3>
+<a href="javascript:test()">테스트</a>
 
 
 <div class="d-flex mb-2 justify-content-between">

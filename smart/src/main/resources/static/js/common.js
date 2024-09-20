@@ -100,6 +100,7 @@ $(function() {
 		for(var item of e.originalEvent.dataTransfer.items){
 			//console.log( item.webkitGetAsEntry() )
 			if( item.webkitGetAsEntry().isFile ){
+				console.log('size> ', item.getAsFile().size )
 				files.push( item.getAsFile() )
 			}else
 				isDirectory = true;
@@ -124,6 +125,7 @@ $(function() {
 
 var Files = {
 	files : [],
+	removed: [], //DB에서 삭제할 파일들의 id
 	
 	setter: function( files ){
 		var filtered = this.filter( files );
@@ -137,8 +139,8 @@ var Files = {
 	filter: function( files ){
 		var overSize = false;
 		files = files.filter( function(file){
-			if( file.size >= 1024*1024*1 ) overSize = true;
-			return file.size < 1024*1024*1; 
+			if( file.size >= 1024*1024*10 ) overSize = true;
+			return file.size < 1024*1024*10; 
 		})
 		return { overSize: overSize, files: files };
 //		return files.filter( function(file){
@@ -157,7 +159,15 @@ var Files = {
 	
 	remover: function( tag ){
 		var idx = tag.index()
-		this.files.splice( idx, 1 )
+		
+		//새로 첨부한 경우 data속성X
+		if( tag.data("id") == undefined ){			
+			this.files.splice( idx - $("[data-id]").length, 1 )
+			
+		}else{
+			this.removed.push( tag.data("id") )
+		}
+		
 		tag.remove();
 		
 		//모든 파일을 삭제시 초기화면에 형태로

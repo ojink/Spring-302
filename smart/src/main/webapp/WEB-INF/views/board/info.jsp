@@ -74,19 +74,15 @@ $(".file-download").on("click", function(){
 	location = `<c:url value='/board/download?id=\${id}'/>`
 })
 
-$("#btn-delete").on("click", function(){
-	if( confirm("정말 삭제하시겠습니까?") ){
-		$("<form method='post' action='delete'></form>")
-		 .appendTo("body")
-		 .append(`<input type="hidden" name="id" value="${vo.id}">`)
-		 .append(`<input type="hidden" name="_method" value="delete">`)
-		 .append(`<input type="hidden" name="pageNo" value="${page.pageNo}">`)
-		 .append(`<input type="hidden" name="search" value="${page.search}">`)
-		 .append(`<input type="hidden" name="keyword" value="${page.keyword}">`)
-		 .submit()
-		
-	}
-})
+// $("#btn-delete").on("click", function(){
+// 	if( confirm("정말 삭제하시겠습니까?") ){
+// 		$("<form method='post' action='delete'></form>")
+// 		 .appendTo("body")
+// 		 .append(`<input type="hidden" name="_method" value="delete">`)
+// 		 .append( addToForm(info) )
+// 		 .submit()
+// 	}
+// })
 
 var info = {  id: 		"${vo.id}" 
 			, pageNo: 	"${page.pageNo}"	
@@ -95,14 +91,22 @@ var info = {  id: 		"${vo.id}"
 			, listSize: "${page.listSize}"	
 			}
 
-$("#btn-list, #btn-modify").on("click", function(){
-	var id = $(this).attr("id"); //btn-list, btn-modify
-	id = id.substr( id.indexOf("-")+1 ) // list, modify
+$("#btn-list, #btn-modify, #btn-delete").on("click", function(){
+	var id = $(this).attr("id"); //btn-list, btn-modify, btn-delete
+	id = id.substr( id.indexOf("-")+1 ) // list, modify, delete
 	
 	$(`<form method="post" action="\${id}"></form>`)
 	.appendTo("body")
-	.append( addToForm(info) )
-	.submit()
+	.append( addToForm(info) );
+	
+	if( id=="delete"){
+		if( confirm("정말 삭제하시겠습니까?") ){
+			$("form")//.append(`<input type="hidden" name="_method" value="delete">`)
+					 .submit();
+		}
+	}else{
+		$("form").submit()
+	}
 })
 </script>
 

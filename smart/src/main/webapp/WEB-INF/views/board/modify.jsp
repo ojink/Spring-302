@@ -37,7 +37,7 @@
 			
 			<!-- 첨부된파일이 있는 경우 -->
 			<c:forEach items="${vo.fileList }" var="f">
-				<div class="file-item d-flex gap-3 my-1">
+				<div class="file-item d-flex gap-3 my-1" data-id="${f.id }">
 					<a role="button" class="file-remove btn-close"></a>
 					
 					<c:if test="${files[f.id]}">
@@ -71,9 +71,17 @@ var info = {  id: 		"${vo.id}"
 			}
 	
 $("#btn-save").on("click", function(){
-// 	if( isNotEmpty() )
-// 		Files.transfer()
-// 		$("form").submit()	
+	if( isNotEmpty() ){
+		//첨부된 파일을 삭제하는 경우: DB삭제 + 물리적파일삭제
+		//새로 첨부했다가 삭제하는 경우: 화면에서만 삭제 + 첨부파일배열에서 삭제
+		
+		Files.transfer()
+		
+		$("form").append(`<input type="hidden" name="_method" value="put">`)
+				 .append(`<input type="hidden" name="removed" value="\${Files.removed}">`)	
+				 .append( addToForm(info) )
+				 .submit()	
+	}
 })
 
 $("#btn-cancel").on("click", function(){
