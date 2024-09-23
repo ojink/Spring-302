@@ -10,15 +10,17 @@ import javax.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.smart.board.BoardMapper;
 import kr.co.smart.board.BoardVO;
+import kr.co.smart.common.CommentVO;
 import kr.co.smart.common.CommonUtility;
 import kr.co.smart.common.FileVO;
 import kr.co.smart.common.PageVO;
@@ -54,6 +56,25 @@ public class BoardController {
 		model.addAttribute("url", "board/info");
 	return "include/redirect";
 	}
+	
+	//댓글목록조회 요청
+	@RequestMapping("/comment/list/{id}")
+	public String commentList( @PathVariable int id, Model model ) {
+		//DB에서 해당글의 댓글목록을 조회해와 화면에 출력할 수 있게 Model객체에 담기
+		model.addAttribute("list", mapper.getListOfComment(id));
+		model.addAttribute("crlf", "\r\n");
+		model.addAttribute("lf", "\n");
+		return "board/comment/list";
+	}
+	
+	//댓글등록 처리 요청
+	@ResponseBody @PostMapping("/comment/register")
+	public boolean register(CommentVO vo, Authentication auth) {
+		vo.setWriter( auth.getName() ); //글쓴이 지정
+		return mapper.registerComment(vo)==1 ? true : false;
+	}
+	
+	
 	
 	//방명록 삭제처리 요청
 	//@DeleteMapping("/delete")

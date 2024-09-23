@@ -11,5 +11,6 @@
 		<typeAlias type="kr.co.smart.remember.RememberVO" alias="remember" />
 		<typeAlias type="kr.co.smart.board.BoardVO" alias="board" />
 		<typeAlias type="kr.co.smart.common.FileVO" alias="file" />
+		<typeAlias type="kr.co.smart.common.CommentVO" alias="comment" />
 	</typeAliases>
 </configuration>

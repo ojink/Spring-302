@@ -2,6 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.board.BoardMapper">
 
+<!-- 댓글목록조회 -->
+<select id="getListOfComment">
+select c.*, name, profile 
+from board_comment c inner join member m on c.writer = m.userid 
+where board_id = #{board_id}
+order by id desc
+</select>
+
+<!-- 댓글등록 -->
+<insert id="registerComment">
+insert into board_comment (board_id, content, writer)
+values ( #{parent_id}, #{content}, #{writer} )
+</insert>
+
 <!-- 첨부된 파일목록 조회 -->
 <select id="getListOfFile" resultType="file">
 select * from board_file where board_id = #{id}

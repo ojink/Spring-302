@@ -32,10 +32,16 @@ public class LoginSuccess implements AuthenticationSuccessHandler {
 		
 		//이전요청이 있었던 경우 해당 요청으로 연결하기
 		String url = null;
-		SavedRequest saved 
-			= new HttpSessionRequestCache().getRequest(request, response);
-		if( saved != null )	url = saved.getRedirectUrl();
-		
+		String savedURL = (String)request.getSession().getAttribute("savedURL");
+		if( savedURL != null ) {
+			url = savedURL;
+			request.getSession().removeAttribute("savedURL");
+		}else {
+			SavedRequest saved 
+				= new HttpSessionRequestCache().getRequest(request, response);
+			if( saved != null )	url = saved.getRedirectUrl();
+		}
+			
 		//카테고리 선택되게
 		if( url != null ) {
 			if( url.contains("customer") )  session.setAttribute("category", "cu");
@@ -45,7 +51,6 @@ public class LoginSuccess implements AuthenticationSuccessHandler {
 			else if( url.contains("data") )  session.setAttribute("category", "da");
 			else if( url.contains("visual") )  session.setAttribute("category", "vi");
 		}
-		
 		//웰컴페이지로 연결
 		response.sendRedirect( url==null ? common.appURL(request) : url );
 	}

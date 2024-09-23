@@ -25,6 +25,11 @@ a:link, a:visited { text-decoration: none; color: initial; }
 .w-px400 { width: 400px !important } 
 .w-px500 { width: 500px !important } 
 
+.h-px40 { height:40px !important }
+.h-px100 { height:100px !important }
+.h-px110 { height:110px !important }
+.h-px150 { height:150px !important }
+
 .profile img { width:100%; height:100%; border-radius: 50% }
 .font-profile { height:100%; color: var(--bs-gray-500) }
 .px40 { width:40px !important; height: 40px !important }

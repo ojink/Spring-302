@@ -68,6 +68,9 @@
 	
 </div>
 
+<jsp:include page="comment/register.jsp"/>
+
+
 <script>
 $(".file-download").on("click", function(){
 	var id = $(this).data("file");

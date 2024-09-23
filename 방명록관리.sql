@@ -86,6 +86,34 @@ select fn_boardFileCount(387) from dual;
 
 
 
+-- 방명록 댓글관리
+create table board_comment (
+id            number constraint board_comment_id_pk primary key,
+content       varchar2(4000) not null,
+writer        varchar2(50) constraint board_comment_writer_fk 
+                           references member(userid) on delete cascade,
+writedate     date default sysdate,
+board_id      number constraint board_comment_id_fk 
+                            references board(id) on delete cascade
+);
+
+create sequence seq_board_comment start with 1 increment by 1 nocache;
+
+create or replace trigger trg_board_comment
+    before insert on board_comment
+    for each row
+begin
+    select seq_board_comment.nextval into :new.id from dual;
+end;
+/
+
+
+
+
+select * from board_comment;
+
+
+
 select userid, name from member;
 
 
