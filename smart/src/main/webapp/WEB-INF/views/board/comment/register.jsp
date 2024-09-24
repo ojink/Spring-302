@@ -43,6 +43,18 @@ $(document)
 	//입력글자 없이 커서가 다른곳으로 가면 댓글등록 초기화
 	if( $(this).val().length==0 ) initComment()
 })
+.on("keyup", "#comment-list textarea", function(){
+	writing( $(this) )
+})
+.on("blur", "#comment-list textarea", function(){
+	if( $(this).val().trim().length==0 ) viewStatus( $(this).closest(".comment") ) 	
+})
+.on("click", ".pagination a", function(){
+	//클릭한 페이지 댓글목록 조회
+	if( ! $(this).hasClass("active") ) commentList( $(this).data("page") )
+})
+
+
 
 $("#btn-register").on("click", function(){
 	$.ajax({
@@ -52,20 +64,20 @@ $("#btn-register").on("click", function(){
 	}).done(function( response ){
 		if( response ) {
 			initComment()
-			commentList()
+			commentList(1)
 		}
 		else alert("댓글등록 실패ㅠㅠ")
 	})
 })
 
 $(function(){
-	commentList()	
+	commentList(1)	
 })
 
 //댓글목록조회
-function commentList(){
+function commentList(pageNo){
 	$.ajax({
-		url: "comment/list/${vo.id}"
+		url: "comment/list/${vo.id}/" + pageNo
 	}).done(function(response){
 		$("#comment-list").html( response )
 	})

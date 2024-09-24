@@ -2,11 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.board.BoardMapper">
 
+<!-- 댓글삭제 -->
+<delete id="deleteComment">
+delete from board_comment where id = #{id}
+</delete>
+
+<!-- 댓글정보조회 -->
+<select id="getOneComment">
+select * from board_comment where id = #{id}
+</select>
+
+<!-- 댓글변경저장 -->
+<update id="updateComment">
+update board_comment set content = #{content} where id = #{id}
+</update>
+
+<!-- 댓글건수조회 -->
+<select id="getCountOfComment" resultType="integer">
+select count(*) from board_comment where board_id = #{board_id}
+</select>
+
+
 <!-- 댓글목록조회 -->
-<select id="getListOfComment">
-select c.*, name, profile 
-from board_comment c inner join member m on c.writer = m.userid 
-where board_id = #{board_id}
+<select id="getListOfComment" resultType="comment">
+select * 
+from ( select c.*, name, profile, row_number() over(order by id) no 
+	   from board_comment c inner join member m on c.writer = m.userid 
+	   where board_id = #{board_id} ) c
+where no between #{page.beginList} and #{page.endList}
 order by id desc
 </select>
 

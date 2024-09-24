@@ -29,6 +29,8 @@ public class AccessUser {
 		//인증된(로그인된) 사용자id 와 글쓴이의 id(writer) 가 같은 경우만 접근 허용 
 		if( url.contains("notice") )
 			access = auth.getName().equals( notice.getOneNotice(id).getWriter() );
+		else if( url.contains("board/comment"))
+			access = auth.getName().equals( board.getOneComment(id).getWriter() );
 		else if( url.contains("board") )
 			access = auth.getName().equals( board.getOneBoard(id).getWriter() );
 		

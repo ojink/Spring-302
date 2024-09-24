@@ -112,7 +112,10 @@ end;
 
 select * from board_comment;
 
-
+--댓글 여러개로 만들기
+insert into board_comment (content,writer,board_id)
+select content,writer,board_id from board_comment;
+commit;
 
 select userid, name from member;
 

@@ -23,9 +23,12 @@ public interface BoardMapper {
 	List<FileVO> getListOfFile(int id); 		//방명록에 첨부된 파일목록 조회
 	
 	int registerComment(CommentVO vo); 			//댓글등록
-	List<CommentVO> getListOfComment(int board_id);//댓글목록조회
+	int getCountOfComment(int board_id);		//댓글 건수조회
+	List<Object> getListOfComment(int board_id, PageVO page);//댓글목록조회
 	CommentVO getOneComment(int id);			//댓글정보조회
 	int updateComment(CommentVO vo);			//댓글변경저장
 	int deleteComment(int id);					//댓글삭제
+	
+	
 	
 }

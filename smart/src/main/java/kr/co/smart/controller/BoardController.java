@@ -1,6 +1,7 @@
 package kr.co.smart.controller;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,11 +59,41 @@ public class BoardController {
 	return "include/redirect";
 	}
 	
+	//댓글삭제처리 요청
+	@ResponseBody @DeleteMapping("/comment/delete/{id}")
+	public boolean commentDelete(@PathVariable int id) {
+		//해당 댓글을 DB 에서 삭제
+		return mapper.deleteComment(id)==1 ?true :false;
+	}
+	
+	
+	
+	//댓글변경저장처리 요청
+	@ResponseBody @PutMapping("/comment/modify")
+	public Object commentModify(CommentVO vo) {
+		//화면에서 입력한 정보로 DB에 변경저장
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		if( mapper.updateComment(vo)==1 ) {
+			map.put("success", true);
+			map.put("message", "성공^^");
+			map.put("content", vo.getContent());
+		}else {
+			map.put("success", false);
+			map.put("message", "실패ㅠㅠ");
+		}
+		return map;
+	}
+	
+	
 	//댓글목록조회 요청
-	@RequestMapping("/comment/list/{id}")
-	public String commentList( @PathVariable int id, Model model ) {
+	@RequestMapping("/comment/list/{id}/{pageNo}")
+	public String commentList( @PathVariable int id, Model model, PageVO page ) {
 		//DB에서 해당글의 댓글목록을 조회해와 화면에 출력할 수 있게 Model객체에 담기
-		model.addAttribute("list", mapper.getListOfComment(id));
+		//model.addAttribute("list", mapper.getListOfComment(id));
+		page.setListSize(5);
+		page.setTotalList( mapper.getCountOfComment(id) ); //댓글건수
+		page.setList( mapper.getListOfComment(id, page) );
+		model.addAttribute("subPage", page);
 		model.addAttribute("crlf", "\r\n");
 		model.addAttribute("lf", "\n");
 		return "board/comment/list";
