@@ -12,9 +12,10 @@ table th:last-child, table td:last-child { border-right: none; }
 table.tb-list tr { height: 45px }
 table.tb-row tr { height: 55px }
 
-a:link, a:visited, .pagination a { text-decoration: none; color: initial; }
+a:link, a:visited, .pagination a, .nav-pills a { text-decoration: none; color: initial; }
 .text-link:hover { text-decoration: underline; color: var(--bs-link-hover-color);  }
 .pagination a:not(.active):hover { cursor: pointer; } 
+
 
 .w-px40 { width: 40px !important } 
 .w-px80 { width: 80px !important } 

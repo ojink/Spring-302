@@ -201,6 +201,13 @@ public class CommonUtility {
 	    return apiURL;
 	}
 	
+	//공공데이터 응답결과 
+	public JSONObject responseBody( String url ) {
+		JSONObject json = new JSONObject( requestAPI(url) );
+		return json.getJSONObject( "response" ).getJSONObject( "body" );
+	}
+	
+	
 	
 	private void mailSender(HtmlEmail sender) {
 		sender.setDebug(true);
