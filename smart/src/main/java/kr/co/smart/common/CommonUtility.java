@@ -207,6 +207,14 @@ public class CommonUtility {
 		return json.getJSONObject( "response" ).getJSONObject( "body" );
 	}
 	
+	public JSONObject response( String url ) {
+		JSONObject json = new JSONObject( requestAPI(url) ).getJSONObject( "response" );
+		//body가 없으면 만들어 넣기
+		json.put("body", json.has("body") ?  json.getJSONObject("body") 
+										  :  new JSONObject("{ totalCount: 0 }") );
+		return json;
+	}
+	
 	
 	
 	private void mailSender(HtmlEmail sender) {

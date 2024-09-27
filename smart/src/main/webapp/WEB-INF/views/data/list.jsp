@@ -18,7 +18,7 @@
 </ul>
 
 <div class="d-flex mb-2 justify-content-between">
-	<div class="col-auto animal-top"></div>
+	<div class="col-auto animal-top d-flex gap-2"></div>
 	<div class="col-auto">
 		<select id="listSize" class="form-select">
 			<c:forEach var="no" begin="1" end="5">
@@ -31,20 +31,26 @@
 <div id="data-list"></div>
 
 <jsp:include page="/WEB-INF/views/include/modal.jsp" />
+<jsp:include page="/WEB-INF/views/include/loading.jsp" />
 
 <script type="text/javascript" 
 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c7ee079eba00994e85447a1b099dc049"></script>
 <script type="text/javascript" 
 	src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=jsbfs5dqif"></script>
-	
+<script type="text/javascript" src="<c:url value='/js/animal.js'/>"></script>	
 <script>
 $(function(){
-	$(".data li").eq(0).trigger("click");  //약국조회 되도록 클릭 강제발생 시키기
+	$(".data li").eq(1).trigger("click");  //약국조회 되도록 클릭 강제발생 시키기
 })
 
 $(document)
 .on("click", ".pagination a", function(){
-	pharmacyList( $(this).data("page"), $("#listSize option:selected").val() )
+	if( $("table#pharmacy").length > 0 ){
+		pharmacyList( $(this).data("page"), $("#listSize option:selected").val() )
+	}else{
+		animalList( $(this).data("page"), $("#listSize option:selected").val() )
+	}
+	window.scrollTo(0, 100);
 })
 .on("click", ".map", function(){ //약국명 클릭시 지도에 위치표시하기
 	//showKakaoMap( $(this) );
@@ -119,25 +125,32 @@ function showKakaoMap( tag ){
 
 
 $("#listSize").on("change", function(){
-	pharmacyList( 1, $(this).val() )
+	if( $("table#pharmacy").length > 0 ){
+		pharmacyList( 1, $(this).val() )
+	}else
+		animalList( 1, $(this).val() )
 })
 
 $(".data li").on("click", function(){
 	$(".data li a").removeClass("active")
 	$(this).children("a").addClass("active")
+	$("#data-list").empty()
 	
 	var idx = $(this).index()
 	if( idx==0 ) 		pharmacyList( 1, $("#listSize option:selected").val() ); 
-	else if( idx==1 ) 	animalList(); 
+	else if( idx==1 ) 	animalList( 1, $("#listSize option:selected").val() ); 
 })
 
 //약국 조회
 function pharmacyList( pageNo, listSize ){
+	$(".animal-top").empty()
+	$(".loading").removeClass("d-none") //로딩중..
 	$.ajax({
 		url: "pharmacy",
 		data: { pageNo: pageNo, listSize: listSize }
 	}).done(function(response){
 		$("#data-list").html( response )
+		$(".loading").addClass("d-none")
 	})
 	
 /*	
@@ -169,10 +182,6 @@ function pharmacyList( pageNo, listSize ){
 		$("#pharmacy tbody").html( tag )
 	})
 */	
-}
-//구조동물 조회
-function animalList(){
-	
 }
 
 </script>
