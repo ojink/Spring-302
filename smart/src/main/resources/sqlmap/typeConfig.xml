@@ -12,5 +12,6 @@
 		<typeAlias type="kr.co.smart.board.BoardVO" alias="board" />
 		<typeAlias type="kr.co.smart.common.FileVO" alias="file" />
 		<typeAlias type="kr.co.smart.common.CommentVO" alias="comment" />
+		<typeAlias type="kr.co.smart.common.LowerKeyMap" alias="lowerMap" />
 	</typeAliases>
 </configuration>

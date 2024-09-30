@@ -2,8 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.visual.VisualMapper">
 
+<!-- 년도별 채용인원수 조회 -->
+<select id="getCountHirementByYear" resultType="lowerMap">
+select to_char(hire_date, 'yyyy')|| '년' unit, count(employee_id) count
+from employees
+group by to_char(hire_date, 'yyyy')
+order by unit
+</select>
+<!-- 월별 채용인원수 조회 -->
+<select id="getCountHirementByMonth" resultType="lowerMap">
+select to_char(hire_date, 'mm') || '월' unit, count(employee_id) count
+from employees
+group by to_char(hire_date, 'mm')
+order by unit
+</select>
+
 <!-- 부서별 사원수 조회 -->
-<select id="getCountByDepartment" resultType="hashmap">
+<select id="getCountByDepartment" resultType="lowerMap">
 select department_id, count(employee_id) count
 		, nvl(department_name, '소속없음') department_name
 from employees e left outer join departments d using(department_id)
