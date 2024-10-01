@@ -45,3 +45,182 @@ function makeLegend(max){
 	})
 }
 
+
+function top3Chart(info){
+	
+	info.type = info.unit == 'month' ? 'line' : 'bar'
+	info.datasets = []
+	for(var idx=0; idx<info.data.length; idx++ ){
+		var department = {}
+		department.label = info.name[idx];
+		department.data = info.data[idx];
+		department.backgroundColor = colors[idx]; //bar 인 경우
+		department.borderColor =  colors[idx];  // line 인 경우
+		info.datasets.push( department )
+	}
+	
+	new Chart( $("#chart"), {
+		type: info.type,
+		data: {
+			labels: info.labels,
+			datasets: info.datasets,
+		},
+		options: setOptions(`${info.unit=="year"?"년도":"월"}별 채용인원수`)
+	} )
+	
+}
+
+function unitChart( info ){
+	
+	info.color = info.data.map(function(data){
+		return colors[ Math.ceil(data*0.1)-1 ]
+	})
+	
+	new Chart( $("#chart"), {
+		type: 'bar',
+		data: {
+			labels: info.labels,
+			datasets: [{
+				data: info.data,
+				barPercentage: 0.5,
+				backgroundColor: info.color
+			}]
+		},
+		
+		options: setOptions( (info.unit=='year' ? '년도별' : '월별') + ' 채용인원수' )	
+		
+	} )
+	
+	makeLegend( Math.max(...info.data) )
+}
+
+
+
+function donutChart( info ){
+	//전체사원수
+	var sum = 0;
+	for(var data of info.data){
+		sum += data;
+	}
+	info.pct = info.data.map(function(data){
+		return (data / sum * 100).toFixed(1)  //소수점 1자리 표시하기
+	})
+	console.log('pct:', info.pct)
+	
+	
+	new Chart( $("#chart"), {
+		type: 'doughnut',
+		data: {
+			labels: info.labels,
+			datasets: [{
+				label: '부서별 사원수',
+				data: info.data,
+				hoverOffset: 20,
+			}] 
+		},
+		
+		options: {
+			cutout: '60%',
+			plugins: {
+				autocolors: { mode: 'data' },
+				datalabels: {
+					anchor: 'middle',
+					formatter: function(value, item){
+						//console.log('value: ', value, ' item: ', item)
+						item = `${value}` < 5 ? '' : `${value}명\n(${info.pct[item.dataIndex]}%)`
+						return `${item}`
+					},
+				}
+			}
+			
+		}
+	
+	} )
+	
+}
+
+function lineChart( info ){
+	
+	new Chart( $("#chart"), {
+		type: 'line',
+		data: {
+			labels: info.labels,
+			datasets: [{
+				label: '부서별 사원수',
+				data: info.data,
+				borderColor: "#0000ff",
+				pointBackgroundColor: "#ff0000",
+				pointRadius: 5,
+				tension: 0
+			}]
+		},
+		options: setOptions('부서별 사원수')
+	} )
+	
+}
+
+function setOptions( title ){
+
+	return {
+	    scales: {
+	        y: {
+	          title: {
+	            color: '#000',
+	            display: true,
+	            text:  title
+	          }
+	        }
+	    },
+			
+		plugins: {
+			legend: { display: false, },
+		},
+	}		
+	
+}
+
+function barChart( info ){
+	//배열로 새로운 배열을 만들어내는 함수: map
+	info.color = info.data.map(function( data ){
+		return colors[ Math.ceil(data*0.1)-1 ]
+	})
+	
+	new Chart( $("#chart"), {
+		type: 'bar',
+		data: {
+			labels: info.labels,
+			datasets: [{
+				label: '부서별 사원수',
+				data: info.data,
+				borderWidth: 0,
+				barPercentage: 0.5,
+				backgroundColor: info.color,
+			}]
+		},
+		options: setOptions('부서별 사원수')		
+	} )
+	
+	makeLegend( Math.max(...info.data) )
+}
+
+
+function sampleChart(){
+	  new Chart( $("#chart"), {
+	    type: 'bar',
+	    data: {
+	      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+	      datasets: [{
+	        label: '# of Votes',
+	        data: [12, 19, 3, 5, 2, 3],
+	        borderWidth: 1
+	      }]
+	    },
+	    options: {
+	      scales: {
+	        y: {
+	          beginAtZero: true
+	        }
+	      }
+	    }
+	  });	
+}

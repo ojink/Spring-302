@@ -2,6 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.visual.VisualMapper">
 
+<!-- TOP3부서의 년도별 채용인원수 조회 -->
+<select id="getCountHirementByYearOfTop3" resultType="lowerMap">
+<![CDATA[
+select  *
+from (select department_name, extract(year from hire_date) unit 
+        from employees e inner join 
+                (select rank, nvl(e.department_id,0) department_id, '(TOP' || rank || ')'||nvl(department_name,'소속없음') department_name
+                from (select dense_rank() over(order by count(*) desc) rank, department_id
+                      from employees
+                      group by department_id) e left outer join departments d on nvl(e.department_id,0)=d.department_id
+                where rank <= 3) r on nvl(e.department_id,0)=r.department_id)
+pivot( count(unit) for unit in (2002,2003,2004,2005,2006,2007,2008,2024) )
+order by department_name
+]]>
+</select>
+
+<!-- TOP3부서의 월별 채용인원수 조회 -->
+<select id="getCountHirementByMonthOfTop3" resultType="lowerMap">
+<![CDATA[
+select  *
+from (select department_name, extract(month from hire_date) unit 
+        from employees e inner join 
+                (select rank, nvl(e.department_id,0) department_id, '(TOP' || rank || ')'||nvl(department_name,'소속없음') department_name
+                from (select dense_rank() over(order by count(*) desc) rank, department_id
+                      from employees
+                      group by department_id) e left outer join departments d on nvl(e.department_id,0)=d.department_id
+                where rank <= 3) r on nvl(e.department_id,0)=r.department_id)
+pivot( count(unit) for unit in (1,2,3,4,5,6,7,8,9,10,11,12) )
+order by department_name
+]]>
+</select>
+
+
 <!-- 년도별 채용인원수 조회 -->
 <select id="getCountHirementByYear" resultType="lowerMap">
 select to_char(hire_date, 'yyyy')|| '년' unit, count(employee_id) count
