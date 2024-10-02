@@ -2,7 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal.user" var="auth"/>
+</sec:authorize>
 <c:choose>
 	<c:when test="${category eq 'cu'}"> <c:set var="title" value="- 고객관리"/>  </c:when>
 	<c:when test="${category eq 'hr'}"> <c:set var="title" value="- 사원관리"/>  </c:when>
@@ -36,9 +38,16 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"></script>
   		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
         <script src="<c:url value='/js/common.js'/>"></script>
-        
+        <script>
+        var socketURL =
+        	`ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/notify-websocket`
+        var authID = `${auth.userid}`
+        var context = `${pageContext.request.contextPath}`
+        </script>
     </head>
     <body>
+<!--        <input type="text" id="name" class="form-control" placeholder="Your name here..."> -->
+    
         <div class="d-flex" id="wrapper">
             <!-- Sidebar-->
             <div class="border-end bg-white" id="sidebar-wrapper">
@@ -69,9 +78,6 @@
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
-                            	<sec:authorize access="isAuthenticated()">
-                            		<sec:authentication property="principal.user" var="auth"/>
-                            	</sec:authorize>
                             
                             	<c:if test="${empty auth}">
                                 <li class="nav-item"><a class="nav-link" href="<c:url value='/member/login'/>">로그인</a></li>
@@ -79,6 +85,42 @@
                             	</c:if>
 
                             	<c:if test="${not empty auth}">
+                            	
+								<li class="nav-item dropdown me-5">
+									<a class="nav-link" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+										<i class="fs-2 fa-regular fa-bell"></i>
+									</a>
+								  	<div id="dropdown-list" class="dropdown-menu dropdown-menu-end">
+								  		<h6 class="px-3 py-2">방명록 댓글 알림</h6>
+								  		<div class="bg-light">
+									    	<div class="dropdown-item">
+									    		
+									    		<div>
+									    			<span>홍길동</span>
+									    			<span>2024/08/01</span>
+									    		</div>
+									    		<div class="notify-comment fw-bold">내용이 들어갈 부내용이 들어갈 부분내용이 들어갈 부분내용이 들어갈 부분내용이 들어갈 부분분</div>
+									    		<div class="dropdown-divider"></div>
+									    		
+									    		<div>
+									    			<span>홍길동</span>
+									    			<span>2024/08/01</span>
+									    		</div>
+									    		<div>내용이 들어갈 부분</div>
+									    		<div class="dropdown-divider"></div>
+									    		
+									    		<div>
+									    			<span>홍길동</span>
+									    			<span>2024/08/01</span>
+									    		</div>
+									    		<div>내용이 들어갈 부분</div>
+									    		<div class="dropdown-divider"></div>
+									    		
+									    	</div>
+								  		
+								  		</div>
+								  	</div>
+								</li>                            	
                             	
                             	<li class="nav-item">
                             		<div class="profile px40">
@@ -124,7 +166,9 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="<c:url value='/js/scripts.js'/>"></script>
-    </body>
+   		<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+        <script src="<c:url value='/js/notify.js'/>"></script>
+     </body>
 </html>
 
 

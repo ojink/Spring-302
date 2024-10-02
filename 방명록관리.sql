@@ -94,7 +94,8 @@ writer        varchar2(50) constraint board_comment_writer_fk
                            references member(userid) on delete cascade,
 writedate     date default sysdate,
 board_id      number constraint board_comment_id_fk 
-                            references board(id) on delete cascade
+                            references board(id) on delete cascade,
+notify        number default 0 /*0:미확인, 1:확인*/
 );
 
 create sequence seq_board_comment start with 1 increment by 1 nocache;
@@ -110,6 +111,7 @@ end;
 
 
 
+desc board_comment;
 select * from board_comment;
 
 --댓글 여러개로 만들기

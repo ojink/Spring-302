@@ -16,6 +16,15 @@ a:link, a:visited, .pagination a, .nav-pills a, .nav-tabs a { text-decoration: n
 .text-link:hover { text-decoration: underline; color: var(--bs-link-hover-color);  }
 .pagination a:not(.active):hover { cursor: pointer; } 
 
+.notify-comment {
+	font-size: small;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: normal;
+	max-height: 40px;
+/* 	display:  */
+	
+}
 
 .w-px40 { width: 40px !important } 
 .w-px80 { width: 80px !important } 
