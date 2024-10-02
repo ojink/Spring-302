@@ -1,5 +1,6 @@
 package kr.co.smart.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +20,20 @@ public class VisualController {
 	//TOP3부서 년도별 채용인원수 조회 요청
 	@RequestMapping("/hirement/top3/year")
 	public Object hirementTop3Year(@RequestBody HashMap<String, Object> map) {
-		map.put("list", mapper.getCountHirementByYearOfTop3());
-		map.put("labels", new int[] {2002,2003,2004,2005,2006,2007,2008,2024});
+		int begin = Integer.parseInt(map.get("begin").toString());
+		int end = Integer.parseInt(map.get("end").toString());
+		ArrayList<String> range = new ArrayList<String>();
+		for(int year= begin; year<=end; year++) {
+			range.add( String.valueOf(year) ); // [ "2002", "2003", 2004", "2005" ]
+		}
+		map.put("range", String.join(",", range));
+		//배열정보를 하나의 문자로 만들기
+		//"2002,2003,2004" -> 배열로 만들기 String.split : []
+		//[2002,2003,2004] -> 하나의 문자열로 만들기 String.join: "2002,2003,2004"
+		
+		map.put("list", mapper.getCountHirementByYearOfTop3(map));
+		//map.put("labels", new int[] {2002,2003,2004,2005,2006,2007,2008,2024});
+		map.put("labels", range);
 		return map;
 	}
 	
@@ -37,7 +50,7 @@ public class VisualController {
 	//년도별 채용인원수 조회 요청
 	@RequestMapping("/hirement/year")
 	public Object hirementYear(@RequestBody HashMap<String, Object> map) {
-		return mapper.getCountHirementByYear();
+		return mapper.getCountHirementByYear(map);
 	}
 	
 	//월별 채용인원수 조회 요청

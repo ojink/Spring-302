@@ -174,6 +174,11 @@ function setOptions( title ){
 			
 		plugins: {
 			legend: { display: false, },
+			datalabels: {
+				formatter: function(value, item){
+					return value==0 ? '' : value;
+				}
+			}
 		},
 	}		
 	

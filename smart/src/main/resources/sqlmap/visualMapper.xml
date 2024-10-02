@@ -13,7 +13,7 @@ from (select department_name, extract(year from hire_date) unit
                       from employees
                       group by department_id) e left outer join departments d on nvl(e.department_id,0)=d.department_id
                 where rank <= 3) r on nvl(e.department_id,0)=r.department_id)
-pivot( count(unit) for unit in (2002,2003,2004,2005,2006,2007,2008,2024) )
+pivot( count(unit) for unit in ( ${range} ) )
 order by department_name
 ]]>
 </select>
@@ -39,6 +39,7 @@ order by department_name
 <select id="getCountHirementByYear" resultType="lowerMap">
 select to_char(hire_date, 'yyyy')|| '년' unit, count(employee_id) count
 from employees
+where extract(year from hire_date) between #{begin} and #{end}
 group by to_char(hire_date, 'yyyy')
 order by unit
 </select>
