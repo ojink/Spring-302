@@ -43,6 +43,7 @@
         	`ws://${pageContext.request.serverName}:${pageContext.request.serverPort}${pageContext.request.contextPath}/notify-websocket`
         var authID = `${auth.userid}`
         var context = `${pageContext.request.contextPath}`
+        var notifyURL =	"<c:url value='/board/comment/notify'/>"
         </script>
     </head>
     <body>
@@ -87,38 +88,11 @@
                             	<c:if test="${not empty auth}">
                             	
 								<li class="nav-item dropdown me-5">
-									<a class="nav-link" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-										<i class="fs-2 fa-regular fa-bell"></i>
+									<a id="notify" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+										<span><i class="fs-2 fa-regular fa-bell"></i></span>
+										<span id="notify-count" class="notify-on"></span>
 									</a>
-								  	<div id="dropdown-list" class="dropdown-menu dropdown-menu-end">
-								  		<h6 class="px-3 py-2">방명록 댓글 알림</h6>
-								  		<div class="bg-light">
-									    	<div class="dropdown-item">
-									    		
-									    		<div>
-									    			<span>홍길동</span>
-									    			<span>2024/08/01</span>
-									    		</div>
-									    		<div class="notify-comment fw-bold">내용이 들어갈 부내용이 들어갈 부분내용이 들어갈 부분내용이 들어갈 부분내용이 들어갈 부분분</div>
-									    		<div class="dropdown-divider"></div>
-									    		
-									    		<div>
-									    			<span>홍길동</span>
-									    			<span>2024/08/01</span>
-									    		</div>
-									    		<div>내용이 들어갈 부분</div>
-									    		<div class="dropdown-divider"></div>
-									    		
-									    		<div>
-									    			<span>홍길동</span>
-									    			<span>2024/08/01</span>
-									    		</div>
-									    		<div>내용이 들어갈 부분</div>
-									    		<div class="dropdown-divider"></div>
-									    		
-									    	</div>
-								  		
-								  		</div>
+								  	<div id="dropdown-list" class="w-px350 dropdown-menu dropdown-menu-end">
 								  	</div>
 								</li>                            	
                             	

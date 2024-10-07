@@ -59,6 +59,8 @@ public class BoardController {
 	return "include/redirect";
 	}
 	
+
+	
 	//댓글삭제처리 요청
 	@ResponseBody @DeleteMapping("/comment/delete/{id}")
 	public boolean commentDelete(@PathVariable int id) {

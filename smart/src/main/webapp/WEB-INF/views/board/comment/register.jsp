@@ -22,7 +22,7 @@
 </div>
 
 <div class="row justify-content-center my-4">
-	<div class="w-75" id="comment-list"></div>
+	<div class="w-75" id="comment-list" data-writer="${vo.writer}" data-id="${vo.id}"></div>
 </div>
 
 
@@ -63,6 +63,10 @@ $("#btn-register").on("click", function(){
 		data: { parent_id: ${vo.id}, content: $("#comment-input textarea").val() }
 	}).done(function( response ){
 		if( response ) {
+			//댓글등록시 미확인 댓글이 발생했음을 알리자			
+			var info =  { userid : "${vo.writer}", board_id : ${vo.id} } 
+			publishNotify( info )
+			
 			initComment()
 			commentList(1)
 		}

@@ -108,11 +108,13 @@ begin
 end;
 /
 
+alter table board_comment add ( notify        number default 0 );
 
-
+select writer from board
+where id in (select board_id from board_comment);
 
 desc board_comment;
-select * from board_comment;
+select id, board_id, notify from board_comment;
 
 --댓글 여러개로 만들기
 insert into board_comment (content,writer,board_id)
@@ -120,6 +122,28 @@ select content,writer,board_id from board_comment;
 commit;
 
 select userid, name from member;
+select count(*) from board_comment;
+
+select board_id, count( case when notify=0 then 0 end ) notifycnt from board_comment
+              group by board_id
+;              
+
+
+
+select  notifycnt, fn_boardFileCount(b.id) filecnt, b.* 
+from ( select row_number() over(order by id) no, name, b.* 
+  		from board b inner join member on writer = userid
+  		) b left outer join (select board_id, count(case when notify=0 then 0 end) notifycnt from board_comment
+              group by board_id) c on b.id = c.board_id
+order by id desc
+;
+
+--미확인댓글 목록 조회
+select *
+from board_comment
+where notify = 0 and board_id in ( select id from board where writer = 'test001' )
+order by writedate desc
+;
 
 
 

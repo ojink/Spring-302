@@ -4,7 +4,10 @@ import java.util.HashMap;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.co.smart.common.LowerKeyMap;
 import kr.co.smart.notify.NotifyMapper;
@@ -19,7 +22,24 @@ public class NotifyController {
 	public Object greeting(HashMap<String,Object> map) throws Exception {
 		LowerKeyMap lower = mapper.countOfUncheckedComment(map);
 		lower.put("userid", map.get("userid"));
+		lower.put("board_id", map.get("board_id"));
+		
+		if( map.get("board_id") != null ) { //등록/삭제
+			lower.put("notifycnt", lower);
+		}
 		return lower;
 	}
 
+	
+	//미확인댓글 목록 조회 요청
+	@RequestMapping("/board/comment/notify")
+	public String commentNotify(Authentication auth, Model model) {
+		//DB에서 전체 미확인 댓글목록을 조회해오기
+		model.addAttribute("list", mapper.getListOfUncheckedComment(auth.getName()) );
+		//읽음(확인)처리
+		mapper.updateUncheckedComment( auth.getName() );
+		return "board/comment/notify";
+	}
+	
+	
 }

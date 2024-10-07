@@ -2,6 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<sec:authorize access="isAuthenticated()">
+	<sec:authentication property="principal.user" var="auth"/>
+</sec:authorize>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -75,6 +79,10 @@ function test(){
 	<td><a class="text-link" href="javascript:info( ${vo.id } )">${vo.title }</a>
 		<c:if test="${vo.filecnt > 0}">
 		<i class="fa-solid fa-paperclip"></i>
+		</c:if>
+		
+		<c:if test="${auth.userid == vo.writer and vo.notifycnt > 0}"> <!-- 본인의 글에 대한 미확인댓글이 있는 글에 깜빡임 처리 -->
+		<i class="text-danger fa-solid fa-comment-dots fa-fade"></i>
 		</c:if>
 	</td>
 	<td>${vo.name }</td>

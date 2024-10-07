@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter @Setter
 public class BoardVO {
-	private int id, readcnt, no, filecnt;
+	private int id, readcnt, no, filecnt, notifycnt;
 	private String title, content, writer, name;
 	private Date writedate;
 	private List<FileVO> fileList;

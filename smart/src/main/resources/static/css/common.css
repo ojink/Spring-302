@@ -22,9 +22,31 @@ a:link, a:visited, .pagination a, .nav-pills a, .nav-tabs a { text-decoration: n
 	text-overflow: ellipsis;
 	white-space: normal;
 	max-height: 40px;
-/* 	display:  */
-	
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
 }
+
+/* 미확인댓글수표시 */
+#notify-count{
+	box-sizing: content-box;
+	display: inline-block;
+	position: relative;
+	left: -18px;
+	top: -12px;
+	min-width: 16px;
+	line-height: 16px;
+	padding: 4px;
+	font-size: small;
+	font-weight: bold;
+	text-align: center; 	
+}
+.notify-on{
+	background-color: #dc3545;
+	border-radius: 50%;
+	color: #fff;
+}
+
 
 .w-px40 { width: 40px !important } 
 .w-px80 { width: 80px !important } 
@@ -33,6 +55,7 @@ a:link, a:visited, .pagination a, .nav-pills a, .nav-tabs a { text-decoration: n
 .w-px200 { width: 200px !important } 
 .w-px250 { width: 250px !important } 
 .w-px300 { width: 300px !important } 
+.w-px350 { width: 350px !important } 
 .w-px400 { width: 400px !important } 
 .w-px500 { width: 500px !important } 
 
@@ -40,7 +63,10 @@ a:link, a:visited, .pagination a, .nav-pills a, .nav-tabs a { text-decoration: n
 .h-px100 { height:100px !important }
 .h-px110 { height:110px !important }
 .h-px150 { height:150px !important }
+.h-px400 { height:400px !important }
+.h-px500 { height:500px !important }
 .h-px600 { height:600px !important }
+.h-max520 { max-height:520px !important }
 
 .profile img { width:100%; height:100%; border-radius: 50% }
 .font-profile { height:100%; color: var(--bs-gray-500) }
