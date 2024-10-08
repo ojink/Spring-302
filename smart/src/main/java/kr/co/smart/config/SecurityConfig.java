@@ -43,6 +43,7 @@ public class SecurityConfig {
 			//.antMatchers("/**").permitAll() //모든 요청에 대한 접근 허용
 			.antMatchers("/customer/**", "/hr/**").permitAll()
 			.antMatchers("/**/list", "/**/info").permitAll()
+			.antMatchers("/member/register").permitAll()
 			.antMatchers("/notice/register").hasAuthority("ADMIN")
 			.antMatchers("/**/register", "/**/user/**").hasAuthority("USER")
 			.antMatchers("/**/modify", "/**/delete").access("@accessUser.is(authentication, request)")

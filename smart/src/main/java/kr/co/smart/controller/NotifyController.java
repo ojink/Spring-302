@@ -20,12 +20,12 @@ public class NotifyController {
 	@MessageMapping("/notify") //클라이언트에서 /hello 로 publish할때 연결되는 메시지수신
 	@SendTo("/topic/notify") //수신메시지를 보낵 구독자 지정
 	public Object greeting(HashMap<String,Object> map) throws Exception {
-		LowerKeyMap lower = mapper.countOfUncheckedComment(map);
+		LowerKeyMap lower = mapper.countOfUncheckedCommentOfUser(map);
 		lower.put("userid", map.get("userid"));
 		lower.put("board_id", map.get("board_id"));
 		
 		if( map.get("board_id") != null ) { //등록/삭제
-			lower.put("notifycnt", lower);
+			lower.put("notifycnt", mapper.countUncheckedCommentOfBoard(map));
 		}
 		return lower;
 	}

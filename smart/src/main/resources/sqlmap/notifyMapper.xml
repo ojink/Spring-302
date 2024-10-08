@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.smart.notify.NotifyMapper">
-<!-- 미확인 댓글건수 조회 -->
-<select id="countOfUncheckedComment" resultType="lowerMap">
+
+<!-- 방명록 글의 미확인 댓글건수 조회 -->
+<select id="countUncheckedCommentOfBoard" resultType="integer">
+select count(case when notify=0 then 0 end) notifycnt
+from board_comment 
+where board_id = #{board_id}
+</select>
+
+<!-- 사용자의 미확인 댓글건수 조회 -->
+<select id="countOfUncheckedCommentOfUser" resultType="lowerMap">
 select count(*) comments from board_comment
 where board_id in (select id from board where writer = #{userid}) 
 and notify = 0
